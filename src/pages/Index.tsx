@@ -1,4 +1,6 @@
+import { useState } from "react";
 import GameResultScreen from "@/components/GameResultScreen";
+import DailyStreakPopup from "@/components/DailyStreakPopup";
 
 const MOCK_RANKING = [
   { rank: 1, name: "María López", xp: 2480, avatar: "👩‍🎓" },
@@ -11,17 +13,22 @@ const MOCK_RANKING = [
 const MOCK_USER_RANK = { rank: 8, name: "Du", xp: 1120, avatar: "🙋", isCurrentUser: true };
 
 const Index = () => {
+  const [showStreak, setShowStreak] = useState(true);
+
   return (
-    <GameResultScreen
-      xpEarned={85}
-      correctAnswers={8}
-      totalQuestions={10}
-      gameType="Multiple Choice"
-      ranking={MOCK_RANKING}
-      currentUserRank={MOCK_USER_RANK}
-      onPlayAgain={() => console.log("Play again")}
-      onContinue={() => console.log("Continue")}
-    />
+    <>
+      <DailyStreakPopup streakDays={12} open={showStreak} onClose={() => setShowStreak(false)} />
+      <GameResultScreen
+        xpEarned={85}
+        correctAnswers={8}
+        totalQuestions={10}
+        gameType="Multiple Choice"
+        ranking={MOCK_RANKING}
+        currentUserRank={MOCK_USER_RANK}
+        onPlayAgain={() => console.log("Play again")}
+        onContinue={() => console.log("Continue")}
+      />
+    </>
   );
 };
 
