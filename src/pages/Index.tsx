@@ -17,7 +17,7 @@ const Index = () => {
 
   return (
     <>
-      <DailyStreakPopup streakDays={12} open={showStreak} onClose={() => setShowStreak(false)} />
+      <DailyStreakPopup streakDays={30} open={showStreak} onClose={() => setShowStreak(false)} />
       <GameResultScreen
         xpEarned={85}
         correctAnswers={8}
