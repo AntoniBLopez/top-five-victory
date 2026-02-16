@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Trophy, Star, Zap, ArrowLeft, ChevronDown, User, Globe, HelpCircle, X, Gamepad2, BookOpen, Target, Clock, Award } from "lucide-react";
+import { Trophy, Star, Zap, ArrowLeft, ChevronDown, User, Globe, HelpCircle, X, Gamepad2, BookOpen, Target, Clock, Award, PenLine, Puzzle, ListChecks, Layers, LogIn } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 
 interface RankingEntry {
@@ -115,17 +115,27 @@ function RankRow({ entry }: { entry: RankingEntry }) {
   );
 }
 
-const XP_RULES = [
-  { icon: Gamepad2, title: "Completar un juego", xp: "+50–100 XP", desc: "Varía según la dificultad del juego" },
-  { icon: Target, title: "Respuesta correcta", xp: "+10 XP", desc: "Por cada respuesta acertada" },
-  { icon: Award, title: "Precisión perfecta", xp: "+25 XP bonus", desc: "100% de acierto en un juego" },
-  { icon: Clock, title: "Racha diaria", xp: "+15 XP/día", desc: "Bonus por entrar cada día consecutivo" },
-  { icon: BookOpen, title: "Primer juego del día", xp: "+20 XP bonus", desc: "Juega al menos una vez al día" },
+const XP_PER_WORD = [
+  { label: "Palabra «known»", xp: "+10 XP", desc: "Por cada palabra que dominas" },
+  { label: "Palabra «learning»", xp: "+4 XP", desc: "Por cada palabra en progreso" },
+];
+
+const XP_BONUSES = [
+  { icon: Award, title: "Precisión perfecta", xp: "+20 XP", desc: "100% known con ≥10 palabras" },
+  { icon: Clock, title: "Bonus por tiempo", xp: "+5 XP/min", desc: "Máximo +30 XP (6 min jugados)" },
+  { icon: LogIn, title: "Login diario", xp: "+15 XP", desc: "Una vez al día, al conectarte" },
+];
+
+const GAME_MULTIPLIERS = [
+  { icon: PenLine, game: "Writing", mult: "×1.5", desc: "Máximo esfuerzo: escribir la palabra", color: "text-primary" },
+  { icon: Puzzle, game: "Matching", mult: "×1.2", desc: "Emparejar correctamente", color: "text-accent" },
+  { icon: ListChecks, game: "Multiple choice", mult: "×1.0", desc: "Base: elegir entre opciones", color: "text-muted-foreground" },
+  { icon: Layers, game: "Flashcards", mult: "×0.4", desc: "Fácil de completar", color: "text-muted-foreground" },
 ];
 
 const RANKING_RULES = [
   "El ranking se reinicia cada lunes a las 00:00",
-  "Solo cuentan los XP ganados durante la semana actual",
+  "Solo cuentan los XP de partidas (no login diario)",
   "Los empates se desempatan por precisión promedio",
   "El Top 5 se actualiza en tiempo real",
 ];
@@ -168,7 +178,7 @@ const RankingPage = () => {
           <DialogTitle className="sr-only">Cómo se obtiene XP</DialogTitle>
 
           {/* Header */}
-          <div className="relative flex flex-col items-center bg-gradient-to-br from-primary to-emerald-400 px-6 pb-6 pt-8">
+          <div className="relative flex flex-col items-center bg-gradient-to-br from-primary to-primary/60 px-6 pb-6 pt-8">
             <button
               onClick={() => setShowRules(false)}
               className="absolute right-3 top-3 rounded-full bg-white/20 p-1.5 text-white backdrop-blur-sm transition-colors hover:bg-white/30"
@@ -184,10 +194,24 @@ const RankingPage = () => {
 
           {/* Body */}
           <div className="space-y-5 px-5 pb-6 pt-5 max-h-[60vh] overflow-y-auto">
-            {/* XP Sources */}
+            {/* XP per word */}
             <div className="space-y-2.5">
-              <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Fuentes de XP</p>
-              {XP_RULES.map((rule) => (
+              <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">XP por palabra</p>
+              <div className="grid grid-cols-2 gap-2">
+                {XP_PER_WORD.map((item) => (
+                  <div key={item.label} className="rounded-xl border border-border bg-card p-3 text-center">
+                    <p className="text-lg font-extrabold text-primary">{item.xp}</p>
+                    <p className="text-xs font-semibold text-foreground">{item.label}</p>
+                    <p className="mt-0.5 text-[10px] text-muted-foreground">{item.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Bonuses */}
+            <div className="space-y-2.5">
+              <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Bonificaciones</p>
+              {XP_BONUSES.map((rule) => (
                 <div key={rule.title} className="flex items-start gap-3 rounded-xl border border-border bg-card p-3 transition-colors hover:bg-muted/50">
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">
                     <rule.icon className="h-5 w-5 text-primary" />
@@ -203,6 +227,25 @@ const RankingPage = () => {
                   </div>
                 </div>
               ))}
+            </div>
+
+            {/* Game Multipliers */}
+            <div className="space-y-2.5">
+              <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Multiplicador por juego</p>
+              <div className="rounded-xl border border-border bg-card overflow-hidden">
+                {GAME_MULTIPLIERS.map((gm, i) => (
+                  <div key={gm.game} className={`flex items-center gap-3 px-4 py-3 ${i < GAME_MULTIPLIERS.length - 1 ? "border-b border-border" : ""}`}>
+                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-muted">
+                      <gm.icon className={`h-4 w-4 ${gm.color}`} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold text-foreground">{gm.game}</p>
+                      <p className="text-xs text-muted-foreground">{gm.desc}</p>
+                    </div>
+                    <span className={`text-lg font-extrabold ${gm.color}`}>{gm.mult}</span>
+                  </div>
+                ))}
+              </div>
             </div>
 
             {/* Ranking Rules */}
