@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { BookOpen, PenLine, Layers, Grid3X3, Zap, ChevronRight, Trophy, Gamepad2 } from "lucide-react";
+import { BookOpen, PenLine, Layers, Grid3X3, Zap, ChevronRight, Trophy, Gamepad2, Sun, Moon, Flame } from "lucide-react";
 import { GameType, GAME_TYPE_LABELS } from "@/types/game";
 import { MOCK_TOPIC_WORDS } from "@/data/mockWords";
+import { useTheme } from "@/components/ThemeProvider";
+import DailyStreakPopup from "@/components/DailyStreakPopup";
 import FlashcardGame from "@/components/games/FlashcardGame";
 import MultipleChoiceGame from "@/components/games/MultipleChoiceGame";
 import WritingGame from "@/components/games/WritingGame";
@@ -16,11 +18,71 @@ const GAMES: { type: GameType; icon: typeof BookOpen; desc: string; multiplier: 
   { type: "matching", icon: BookOpen, desc: "Conecta palabras con su traducción", multiplier: "×1.2", emoji: "🔗" },
 ];
 
+const MOCK_STREAK = 7;
+
+const AppHeader = ({ showBack, onBack, title }: { showBack?: boolean; onBack?: () => void; title?: string }) => {
+  const { theme, toggleTheme } = useTheme();
+
+  return (
+    <header className="sticky top-0 z-10 border-b border-border bg-background/80 backdrop-blur-lg">
+      <div className="mx-auto flex max-w-2xl items-center justify-between px-4 py-3 md:px-6">
+        <div className="flex items-center gap-3">
+          {showBack ? (
+            <button onClick={onBack} className="p-2 -ml-2 rounded-lg hover:bg-muted transition-colors">
+              <ChevronRight className="h-5 w-5 text-foreground rotate-180" />
+            </button>
+          ) : (
+            <div className="flex items-center gap-2">
+              <Gamepad2 className="h-5 w-5 text-primary" />
+              <span className="text-base font-bold text-foreground md:text-lg">SpanischMitBelu</span>
+            </div>
+          )}
+          {title && <h1 className="text-base font-bold text-foreground md:text-lg">{title}</h1>}
+        </div>
+        <div className="flex items-center gap-2">
+          {/* Streak badge */}
+          <div className="flex items-center gap-1 rounded-full bg-accent/15 px-2.5 py-1">
+            <Flame className="h-4 w-4 text-accent" />
+            <span className="text-xs font-bold text-accent-foreground">{MOCK_STREAK}</span>
+          </div>
+          {/* Theme toggle */}
+          <button
+            onClick={toggleTheme}
+            className="rounded-full p-2 hover:bg-muted transition-colors"
+            aria-label="Toggle theme"
+          >
+            {theme === "light" ? (
+              <Moon className="h-5 w-5 text-foreground" />
+            ) : (
+              <Sun className="h-5 w-5 text-foreground" />
+            )}
+          </button>
+        </div>
+      </div>
+    </header>
+  );
+};
+
 const GamesPage = () => {
   const navigate = useNavigate();
   const [activeGame, setActiveGame] = useState<GameType | null>(null);
   const [gameFinished, setGameFinished] = useState(false);
   const [results, setResults] = useState<{ known: string[]; learning: string[] } | null>(null);
+  const [showStreak, setShowStreak] = useState(false);
+
+  useEffect(() => {
+    // Show streak popup on first visit of the session
+    const shown = sessionStorage.getItem("streak_shown");
+    if (!shown) {
+      const timer = setTimeout(() => setShowStreak(true), 600);
+      return () => clearTimeout(timer);
+    }
+  }, []);
+
+  const handleCloseStreak = () => {
+    setShowStreak(false);
+    sessionStorage.setItem("streak_shown", "1");
+  };
 
   const handleComplete = (known: string[], learning: string[]) => {
     setResults({ known, learning });
@@ -41,15 +103,18 @@ const GamesPage = () => {
   // End game screen
   if (gameFinished && results && activeGame) {
     return (
-      <div className="min-h-[100dvh] bg-background flex items-center justify-center px-4">
-        <EndGameScreen
-          knownCount={results.known.length}
-          learningCount={results.learning.length}
-          topicWords={MOCK_TOPIC_WORDS}
-          restart={handleRestart}
-          gameType={activeGame}
-          onGoHome={handleBack}
-        />
+      <div className="min-h-[100dvh] bg-background flex flex-col">
+        <AppHeader showBack onBack={handleBack} />
+        <div className="flex flex-1 items-center justify-center px-4">
+          <EndGameScreen
+            knownCount={results.known.length}
+            learningCount={results.learning.length}
+            topicWords={MOCK_TOPIC_WORDS}
+            restart={handleRestart}
+            gameType={activeGame}
+            onGoHome={handleBack}
+          />
+        </div>
       </div>
     );
   }
@@ -58,16 +123,7 @@ const GamesPage = () => {
   if (activeGame) {
     return (
       <div className="min-h-[100dvh] bg-background flex flex-col">
-        {/* Sticky header */}
-        <header className="sticky top-0 z-10 border-b border-border bg-background/80 backdrop-blur-lg">
-          <div className="mx-auto flex max-w-2xl items-center gap-3 px-4 py-3 md:px-6">
-            <button onClick={handleBack} className="p-2 -ml-2 rounded-lg hover:bg-muted transition-colors">
-              <ChevronRight className="h-5 w-5 text-foreground rotate-180" />
-            </button>
-            <h1 className="text-base font-bold text-foreground md:text-lg">{GAME_TYPE_LABELS[activeGame]}</h1>
-          </div>
-        </header>
-
+        <AppHeader showBack onBack={handleBack} title={GAME_TYPE_LABELS[activeGame]} />
         <main className="flex flex-1 items-start justify-center py-6 md:py-10 md:items-center">
           <div className="w-full">
             {activeGame === "flashcards" && <FlashcardGame topicWords={MOCK_TOPIC_WORDS} onComplete={handleComplete} />}
@@ -83,7 +139,9 @@ const GamesPage = () => {
   // Game selection hub
   return (
     <div className="min-h-[100dvh] bg-background">
-      {/* Desktop: centered card layout. Mobile: full-width */}
+      <AppHeader />
+      <DailyStreakPopup streakDays={MOCK_STREAK} open={showStreak} onClose={handleCloseStreak} />
+
       <div className="mx-auto max-w-2xl px-4 pb-8 pt-6 md:px-6 md:pt-12">
         {/* Header */}
         <div className="mb-8 text-center md:mb-10">
@@ -108,7 +166,7 @@ const GamesPage = () => {
           </div>
         </div>
 
-        {/* Game cards — 1 col mobile, 2 col desktop */}
+        {/* Game cards */}
         <div className="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4">
           {GAMES.map(({ type, icon: Icon, desc, multiplier, emoji }) => (
             <button
