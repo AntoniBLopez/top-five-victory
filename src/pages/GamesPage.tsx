@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { BookOpen, PenLine, Layers, Grid3X3, Zap, ChevronRight, Trophy, Gamepad2, Sun, Moon, Flame } from "lucide-react";
 import { GameType, GAME_TYPE_LABELS } from "@/types/game";
 import { MOCK_TOPIC_WORDS } from "@/data/mockWords";
+import { MOCK_CONJUGATION_WORDS } from "@/data/mockConjugations";
 import { useTheme } from "@/components/ThemeProvider";
 import DailyStreakPopup from "@/components/DailyStreakPopup";
 import FlashcardGame from "@/components/games/FlashcardGame";
@@ -65,10 +66,15 @@ const AppHeader = ({ showBack, onBack, title }: { showBack?: boolean; onBack?: (
 
 const GamesPage = () => {
   const navigate = useNavigate();
+  const { mode } = useParams<{ mode: string }>();
   const [activeGame, setActiveGame] = useState<GameType | null>(null);
   const [gameFinished, setGameFinished] = useState(false);
   const [results, setResults] = useState<{ known: string[]; learning: string[] } | null>(null);
   const [showStreak, setShowStreak] = useState(false);
+
+  const isConjugation = mode === "conjugaciones";
+  const topicWords = isConjugation ? MOCK_CONJUGATION_WORDS : MOCK_TOPIC_WORDS;
+  const modeLabel = isConjugation ? "Conjugaciones" : "Vocabulario";
 
   useEffect(() => {
     // Show streak popup on first visit of the session
@@ -100,6 +106,10 @@ const GamesPage = () => {
     setResults(null);
   };
 
+  const handleGoHome = () => {
+    navigate("/");
+  };
+
   // End game screen
   if (gameFinished && results && activeGame) {
     return (
@@ -109,7 +119,7 @@ const GamesPage = () => {
           <EndGameScreen
             knownCount={results.known.length}
             learningCount={results.learning.length}
-            topicWords={MOCK_TOPIC_WORDS}
+            topicWords={topicWords}
             restart={handleRestart}
             gameType={activeGame}
             onGoHome={handleBack}
@@ -126,10 +136,10 @@ const GamesPage = () => {
         <AppHeader showBack onBack={handleBack} title={GAME_TYPE_LABELS[activeGame]} />
         <main className="flex flex-1 items-start justify-center py-6 md:py-10 md:items-center">
           <div className="w-full">
-            {activeGame === "flashcards" && <FlashcardGame topicWords={MOCK_TOPIC_WORDS} onComplete={handleComplete} />}
-            {activeGame === "multiplechoice" && <MultipleChoiceGame topicWords={MOCK_TOPIC_WORDS} onComplete={handleComplete} />}
-            {activeGame === "writing" && <WritingGame topicWords={MOCK_TOPIC_WORDS} onComplete={handleComplete} />}
-            {activeGame === "matching" && <MatchingGame topicWords={MOCK_TOPIC_WORDS} onComplete={handleComplete} />}
+            {activeGame === "flashcards" && <FlashcardGame topicWords={topicWords} onComplete={handleComplete} />}
+            {activeGame === "multiplechoice" && <MultipleChoiceGame topicWords={topicWords} onComplete={handleComplete} />}
+            {activeGame === "writing" && <WritingGame topicWords={topicWords} onComplete={handleComplete} />}
+            {activeGame === "matching" && <MatchingGame topicWords={topicWords} onComplete={handleComplete} />}
           </div>
         </main>
       </div>
@@ -148,7 +158,7 @@ const GamesPage = () => {
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 md:h-20 md:w-20">
             <Gamepad2 className="h-8 w-8 text-primary md:h-10 md:w-10" />
           </div>
-          <h1 className="text-2xl font-extrabold text-foreground md:text-3xl">Practica vocabulario</h1>
+          <h1 className="text-2xl font-extrabold text-foreground md:text-3xl">Practica {modeLabel.toLowerCase()}</h1>
           <p className="mt-1 text-sm text-muted-foreground md:text-base">Elige un modo de juego para empezar</p>
         </div>
 
@@ -156,12 +166,12 @@ const GamesPage = () => {
         <div className="mb-6 rounded-2xl border border-border bg-card p-4 md:p-5">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground md:text-xs">Tema</p>
-              <p className="text-base font-bold text-foreground md:text-lg">Vocabulario básico</p>
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground md:text-xs">Modo</p>
+              <p className="text-base font-bold text-foreground md:text-lg">{modeLabel}</p>
             </div>
             <div className="flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1">
               <BookOpen className="h-3.5 w-3.5 text-primary" />
-              <span className="text-xs font-semibold text-primary">{MOCK_TOPIC_WORDS.length} palabras</span>
+              <span className="text-xs font-semibold text-primary">{topicWords.length} {isConjugation ? "conjugaciones" : "palabras"}</span>
             </div>
           </div>
         </div>

@@ -4,7 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/components/ThemeProvider";
-import Index from "./pages/Index";
+import HomePage from "./pages/HomePage";
 import RankingPage from "./pages/RankingPage";
 import GamesPage from "./pages/GamesPage";
 import NotFound from "./pages/NotFound";
@@ -19,9 +19,9 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Index />} />
+            <Route path="/" element={<HomePage />} />
             <Route path="/ranking" element={<RankingPage />} />
-            <Route path="/games" element={<GamesPage />} />
+            <Route path="/games/:mode" element={<GamesPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

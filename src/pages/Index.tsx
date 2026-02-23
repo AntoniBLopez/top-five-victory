@@ -1,7 +1,7 @@
 import { Navigate } from "react-router-dom";
 
 const Index = () => {
-  return <Navigate to="/games" replace />;
+  return <Navigate to="/" replace />;
 };
 
 export default Index;
