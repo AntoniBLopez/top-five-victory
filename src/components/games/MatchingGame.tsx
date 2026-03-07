@@ -31,6 +31,7 @@ const MatchingGame = ({ topicWords, onComplete }: Props) => {
   const [selected, setSelected] = useState<Cell | null>(null);
   const [matchedPairs, setMatchedPairs] = useState<Set<number>>(new Set());
   const [wrongPair, setWrongPair] = useState<[string, string] | null>(null);
+  const [hoveredPair, setHoveredPair] = useState<number | null>(null);
   const [knownWords, setKnownWords] = useState<string[]>([]);
   const [learningWords, setLearningWords] = useState<string[]>([]);
   const [errorCounts, setErrorCounts] = useState<Record<number, number>>({});
