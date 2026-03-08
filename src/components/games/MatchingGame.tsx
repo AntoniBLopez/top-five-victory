@@ -1,6 +1,8 @@
 import { useState, useMemo } from "react";
 import { WordsArray } from "@/types/game";
-import { Check, ChevronRight } from "lucide-react";
+import { Check, ChevronRight, Lightbulb } from "lucide-react";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface Props {
   topicWords: WordsArray[];
@@ -26,6 +28,7 @@ function shuffleArray<T>(arr: T[]): T[] {
 const PAIRS_PER_PAGE = 6;
 
 const MatchingGame = ({ topicWords, onComplete }: Props) => {
+  const isMobile = useIsMobile();
   const totalPages = Math.ceil(topicWords.length / PAIRS_PER_PAGE);
   const [pageIndex, setPageIndex] = useState(0);
   const [selected, setSelected] = useState<Cell | null>(null);
@@ -35,6 +38,7 @@ const MatchingGame = ({ topicWords, onComplete }: Props) => {
   const [knownWords, setKnownWords] = useState<string[]>([]);
   const [learningWords, setLearningWords] = useState<string[]>([]);
   const [errorCounts, setErrorCounts] = useState<Record<number, number>>({});
+  const [showTip, setShowTip] = useState(true);
 
   const pageWords = topicWords.slice(pageIndex * PAIRS_PER_PAGE, (pageIndex + 1) * PAIRS_PER_PAGE);
 
@@ -152,6 +156,28 @@ const MatchingGame = ({ topicWords, onComplete }: Props) => {
           ) : "Ver resultados"}
         </button>
       )}
+
+      <Dialog open={showTip && pageIndex === 0 && allMatched} onOpenChange={setShowTip}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <div className="flex items-center gap-2">
+              <Lightbulb className="h-5 w-5 text-primary" />
+              <DialogTitle>Consejo de repaso</DialogTitle>
+            </div>
+          </DialogHeader>
+          <DialogDescription className="text-base">
+            {isMobile 
+              ? "Al tocar una card que ya has emparejado, verás resaltada también su pareja. ¡Perfecta para repasar!"
+              : "Al pasar el cursor sobre una card que ya has emparejado, verás resaltada también su pareja. ¡Perfecta para repasar!"}
+          </DialogDescription>
+          <button
+            onClick={() => setShowTip(false)}
+            className="w-full rounded-lg bg-primary py-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:opacity-90 active:scale-[0.97]"
+          >
+            Entendido
+          </button>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
