@@ -135,16 +135,15 @@ const MatchingGame = ({ topicWords, onComplete }: Props) => {
         </div>
         
         {/* Score Display */}
-        <div className="flex gap-3 justify-center">
-          <div className="flex items-center gap-1.5 bg-destructive/10 rounded-full px-2.5 py-1">
-            <div className="w-6 h-6 rounded-full bg-destructive/20 border border-destructive/30 flex items-center justify-center">
-              <span className="text-xs font-bold text-destructive">{learningWords.length}</span>
-            </div>
+        <div className="flex items-center gap-3">
+          <div className="w-7 h-7 rounded-full bg-destructive/20 border-2 border-destructive/40 flex items-center justify-center shrink-0">
+            <span className="text-xs font-bold text-destructive">{learningWords.length}</span>
           </div>
-          <div className="flex items-center gap-1.5 bg-primary/10 rounded-full px-2.5 py-1">
-            <div className="w-6 h-6 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center">
-              <span className="text-xs font-bold text-primary">{knownWords.length}</span>
-            </div>
+          <div className="h-2 w-full rounded-full bg-muted overflow-hidden">
+            <div className="h-full rounded-full bg-primary transition-all duration-500" style={{ width: `${progress}%` }} />
+          </div>
+          <div className="w-7 h-7 rounded-full bg-primary/20 border-2 border-primary/40 flex items-center justify-center shrink-0">
+            <span className="text-xs font-bold text-primary">{knownWords.length}</span>
           </div>
         </div>
       </div>
