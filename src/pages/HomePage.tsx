@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { BookOpen, PenLine, Sun, Moon, Flame, Gamepad2 } from "lucide-react";
+import { BookOpen, PenLine, Sun, Moon, Flame, Gamepad2, UserCircle } from "lucide-react";
 import { useTheme } from "@/components/ThemeProvider";
 
 const MOCK_STREAK = 7;
@@ -41,6 +41,13 @@ const HomePage = () => {
               <Flame className="h-4 w-4 text-accent" />
               <span className="text-xs font-bold text-accent-foreground">{MOCK_STREAK}</span>
             </div>
+            <button
+              onClick={() => navigate("/profile")}
+              className="rounded-full p-2 hover:bg-muted transition-colors"
+              aria-label="Perfil"
+            >
+              <UserCircle className="h-5 w-5 text-foreground" />
+            </button>
             <button
               onClick={toggleTheme}
               className="rounded-full p-2 hover:bg-muted transition-colors"
