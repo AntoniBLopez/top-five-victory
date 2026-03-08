@@ -1,6 +1,8 @@
 import { useState, useMemo } from "react";
 import { WordsArray } from "@/types/game";
-import { Check, ChevronRight } from "lucide-react";
+import { Check, ChevronRight, Lightbulb } from "lucide-react";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface Props {
   topicWords: WordsArray[];
