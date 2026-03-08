@@ -28,6 +28,7 @@ function shuffleArray<T>(arr: T[]): T[] {
 const PAIRS_PER_PAGE = 6;
 
 const MatchingGame = ({ topicWords, onComplete }: Props) => {
+  const isMobile = useIsMobile();
   const totalPages = Math.ceil(topicWords.length / PAIRS_PER_PAGE);
   const [pageIndex, setPageIndex] = useState(0);
   const [selected, setSelected] = useState<Cell | null>(null);
@@ -37,6 +38,7 @@ const MatchingGame = ({ topicWords, onComplete }: Props) => {
   const [knownWords, setKnownWords] = useState<string[]>([]);
   const [learningWords, setLearningWords] = useState<string[]>([]);
   const [errorCounts, setErrorCounts] = useState<Record<number, number>>({});
+  const [showTip, setShowTip] = useState(true);
 
   const pageWords = topicWords.slice(pageIndex * PAIRS_PER_PAGE, (pageIndex + 1) * PAIRS_PER_PAGE);
 
