@@ -156,6 +156,28 @@ const MatchingGame = ({ topicWords, onComplete }: Props) => {
           ) : "Ver resultados"}
         </button>
       )}
+
+      <Dialog open={showTip && pageIndex === 0 && allMatched} onOpenChange={setShowTip}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <div className="flex items-center gap-2">
+              <Lightbulb className="h-5 w-5 text-primary" />
+              <DialogTitle>Consejo de repaso</DialogTitle>
+            </div>
+          </DialogHeader>
+          <DialogDescription className="text-base">
+            {isMobile 
+              ? "Al tocar una card que ya has emparejado, verás resaltada también su pareja. ¡Perfecta para repasar!"
+              : "Al pasar el cursor sobre una card que ya has emparejado, verás resaltada también su pareja. ¡Perfecta para repasar!"}
+          </DialogDescription>
+          <button
+            onClick={() => setShowTip(false)}
+            className="w-full rounded-lg bg-primary py-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:opacity-90 active:scale-[0.97]"
+          >
+            Entendido
+          </button>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
