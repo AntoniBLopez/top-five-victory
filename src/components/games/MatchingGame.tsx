@@ -125,13 +125,29 @@ const MatchingGame = ({ topicWords, onComplete }: Props) => {
   return (
     <div className="flex flex-col items-center gap-4 w-full max-w-lg mx-auto px-4 md:gap-6">
       {/* Progress */}
-      <div className="w-full space-y-1.5">
+      <div className="w-full space-y-2.5">
         <div className="flex justify-between text-xs font-semibold text-muted-foreground">
           <span>Grupo {pageIndex + 1}/{totalPages}</span>
           <span>{totalMatched}/{topicWords.length} parejas</span>
         </div>
         <div className="h-2 w-full rounded-full bg-muted overflow-hidden">
           <div className="h-full rounded-full bg-primary transition-all duration-500" style={{ width: `${progress}%` }} />
+        </div>
+        
+        {/* Score Display */}
+        <div className="flex gap-2 justify-center">
+          <div className="flex items-center gap-2 bg-destructive/10 rounded-full px-3 py-1.5">
+            <div className="w-6 h-6 rounded-full bg-destructive/20 border border-destructive/30 flex items-center justify-center">
+              <span className="text-xs font-bold text-destructive">{learningWords.length}</span>
+            </div>
+            <span className="text-xs font-medium text-destructive/80">aprendiendo</span>
+          </div>
+          <div className="flex items-center gap-2 bg-primary/10 rounded-full px-3 py-1.5">
+            <div className="w-6 h-6 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center">
+              <span className="text-xs font-bold text-primary">{knownWords.length}</span>
+            </div>
+            <span className="text-xs font-medium text-primary/80">conocidas</span>
+          </div>
         </div>
       </div>
 
