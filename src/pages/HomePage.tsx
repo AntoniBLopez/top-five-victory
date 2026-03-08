@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { BookOpen, PenLine, Sun, Moon, Flame, Gamepad2 } from "lucide-react";
+import { BookOpen, PenLine, Sun, Moon, Flame, Gamepad2, UserCircle } from "lucide-react";
 import { useTheme } from "@/components/ThemeProvider";
 
 const MOCK_STREAK = 7;
