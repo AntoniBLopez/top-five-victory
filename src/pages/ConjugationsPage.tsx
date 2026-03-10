@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { ChevronDown, BookOpen } from "lucide-react";
+import { ChevronDown, ChevronLeft, Search } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CONJUGATION_BY_TENSE } from "@/data/mockConjugations";
 import { WordsArray } from "@/types/game";
@@ -22,7 +22,6 @@ function parseConjugations(): VerbData[] {
   for (const tenseKey of tenseKeys) {
     const words: WordsArray[] = CONJUGATION_BY_TENSE[tenseKey] || [];
     for (const [prompt, form] of words) {
-      // Format: "verb — pronoun (tense)"
       const match = prompt.match(/^(.+?)\s*—\s*(.+?)\s*\(/);
       if (!match) continue;
       const verb = match[1].trim();
@@ -39,85 +38,193 @@ function parseConjugations(): VerbData[] {
   return Array.from(verbMap.entries()).map(([verb, tenses]) => ({ verb, tenses }));
 }
 
-const TENSE_COLORS: Record<string, string> = {
-  "Präsens": "bg-primary/10 text-primary",
-  "Präteritum": "bg-accent/15 text-accent-foreground",
-  "Perfekt": "bg-destructive/10 text-destructive",
+// Verb list view
+const VerbListView = ({
+  verbs,
+  onSelect,
+}: {
+  verbs: VerbData[];
+  onSelect: (verb: VerbData) => void;
+}) => {
+  const [search, setSearch] = useState("");
+  const filtered = verbs.filter((v) =>
+    v.verb.toLowerCase().includes(search.toLowerCase())
+  );
+
+  return (
+    <>
+      {/* Search */}
+      <div className="px-4 pt-4 pb-2">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <input
+            type="text"
+            placeholder="Buscar verbo…"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full rounded-xl border border-border bg-card pl-10 pr-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all"
+          />
+        </div>
+      </div>
+
+      {/* Verb list */}
+      <div className="px-4 pt-2 pb-4">
+        <div className="divide-y divide-border rounded-2xl border border-border bg-card overflow-hidden">
+          {filtered.map((verbData, i) => (
+            <motion.button
+              key={verbData.verb}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.02, duration: 0.2 }}
+              onClick={() => onSelect(verbData)}
+              className="flex w-full items-center justify-between px-5 py-4 transition-colors hover:bg-muted/40 active:bg-muted/60"
+            >
+              <span className="text-[15px] font-bold text-foreground">{verbData.verb}</span>
+              <ChevronDown className="h-4 w-4 text-muted-foreground -rotate-90" />
+            </motion.button>
+          ))}
+          {filtered.length === 0 && (
+            <div className="px-5 py-8 text-center text-sm text-muted-foreground">
+              No se encontraron verbos
+            </div>
+          )}
+        </div>
+      </div>
+    </>
+  );
+};
+
+// Verb detail view (inspired by reference images)
+const VerbDetailView = ({
+  verbData,
+  onBack,
+}: {
+  verbData: VerbData;
+  onBack: () => void;
+}) => {
+  const [collapsedTenses, setCollapsedTenses] = useState<Set<string>>(new Set());
+
+  const toggleTense = (tense: string) => {
+    setCollapsedTenses((prev) => {
+      const next = new Set(prev);
+      if (next.has(tense)) next.delete(tense);
+      else next.add(tense);
+      return next;
+    });
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: 40 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -40 }}
+      transition={{ duration: 0.25 }}
+    >
+      {/* Verb header */}
+      <div className="sticky top-[53px] z-10 border-b border-border bg-background/90 backdrop-blur-lg">
+        <div className="mx-auto max-w-2xl flex items-center gap-3 px-4 py-3">
+          <button
+            onClick={onBack}
+            className="flex h-8 w-8 items-center justify-center rounded-lg text-primary hover:bg-muted/50 transition-colors"
+          >
+            <ChevronLeft className="h-5 w-5" />
+          </button>
+          <h2 className="text-lg font-extrabold text-foreground">{verbData.verb}</h2>
+        </div>
+      </div>
+
+      {/* Tense sections */}
+      <div className="mx-auto max-w-2xl px-4 pt-4 pb-6 space-y-1">
+        {Object.entries(verbData.tenses).map(([tense, forms]) => {
+          const isCollapsed = collapsedTenses.has(tense);
+          return (
+            <div key={tense}>
+              {/* Tense header */}
+              <button
+                onClick={() => toggleTense(tense)}
+                className="flex w-full items-center justify-between py-4"
+              >
+                <span className="text-[11px] font-extrabold uppercase tracking-[0.15em] text-muted-foreground">
+                  {tense}
+                </span>
+                <ChevronDown
+                  className={`h-4 w-4 text-muted-foreground transition-transform duration-200 ${isCollapsed ? "" : "rotate-180"}`}
+                />
+              </button>
+
+              {/* Conjugation rows */}
+              <AnimatePresence initial={false}>
+                {!isCollapsed && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="divide-y divide-border/60">
+                      {forms.map(({ pronoun, form }, i) => (
+                        <div
+                          key={i}
+                          className="flex items-center justify-between py-3.5 px-1"
+                        >
+                          <span className="text-sm text-muted-foreground">
+                            <span className="text-muted-foreground/60 mr-1">›</span>
+                            {pronoun}
+                          </span>
+                          <span className="text-[15px] font-bold text-foreground">
+                            {form}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {/* Separator line after section */}
+              <div className="border-b border-border" />
+            </div>
+          );
+        })}
+      </div>
+    </motion.div>
+  );
 };
 
 const ConjugationsPage = () => {
   const verbs = useMemo(parseConjugations, []);
-  const [openVerb, setOpenVerb] = useState<string | null>(null);
+  const [selectedVerb, setSelectedVerb] = useState<VerbData | null>(null);
 
   return (
     <div className="min-h-[100dvh] bg-background pb-20">
-      <header className="sticky top-0 z-10 border-b border-border bg-background/80 backdrop-blur-lg">
+      {/* Top header */}
+      <header className="sticky top-0 z-20 border-b border-border bg-background/80 backdrop-blur-lg">
         <div className="mx-auto flex max-w-2xl items-center justify-center px-4 py-3">
           <h1 className="text-base font-bold text-foreground">Conjugaciones</h1>
         </div>
       </header>
 
-      <div className="mx-auto max-w-2xl px-4 pt-6">
-        <div className="mb-5 flex items-center gap-3 rounded-2xl border border-border bg-card p-4">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">
-            <BookOpen className="h-5 w-5 text-primary" />
-          </div>
-          <div>
-            <p className="text-sm font-semibold text-foreground">Tabla de conjugaciones</p>
-            <p className="text-xs text-muted-foreground">Toca un verbo para ver todos sus tiempos</p>
-          </div>
-        </div>
-
-        <div className="space-y-2">
-          {verbs.map(({ verb, tenses }) => {
-            const isOpen = openVerb === verb;
-            return (
-              <div key={verb} className="rounded-2xl border border-border bg-card overflow-hidden">
-                <button
-                  onClick={() => setOpenVerb(isOpen ? null : verb)}
-                  className="flex w-full items-center justify-between px-4 py-3.5 transition-colors hover:bg-muted/50"
-                >
-                  <span className="text-sm font-bold text-foreground">{verb}</span>
-                  <ChevronDown
-                    className={`h-4 w-4 text-muted-foreground transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
-                  />
-                </button>
-
-                <AnimatePresence initial={false}>
-                  {isOpen && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.2 }}
-                      className="overflow-hidden"
-                    >
-                      <div className="border-t border-border px-4 py-3 space-y-4">
-                        {Object.entries(tenses).map(([tense, forms]) => (
-                          <div key={tense}>
-                            <span
-                              className={`inline-block rounded-full px-2.5 py-0.5 text-[11px] font-bold ${TENSE_COLORS[tense] || "bg-muted text-muted-foreground"}`}
-                            >
-                              {tense}
-                            </span>
-                            <div className="mt-2 grid grid-cols-2 gap-x-4 gap-y-1.5">
-                              {forms.map(({ pronoun, form }, i) => (
-                                <div key={i} className="flex items-baseline gap-2">
-                                  <span className="text-xs text-muted-foreground w-12 shrink-0">{pronoun}</span>
-                                  <span className="text-sm font-semibold text-foreground">{form}</span>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            );
-          })}
-        </div>
+      <div className="mx-auto max-w-2xl">
+        <AnimatePresence mode="wait">
+          {selectedVerb ? (
+            <VerbDetailView
+              key={selectedVerb.verb}
+              verbData={selectedVerb}
+              onBack={() => setSelectedVerb(null)}
+            />
+          ) : (
+            <motion.div
+              key="list"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0, x: -40 }}
+              transition={{ duration: 0.2 }}
+            >
+              <VerbListView verbs={verbs} onSelect={setSelectedVerb} />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       <BottomNav />
