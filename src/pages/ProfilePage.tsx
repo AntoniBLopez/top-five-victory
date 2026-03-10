@@ -309,6 +309,7 @@ const ProfilePage = () => {
       </Dialog>
       <BottomNav />
     </div>
+  );
 };
 
 export default ProfilePage;
