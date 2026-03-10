@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Sun, Moon, Camera, Trash2, Pencil, Eye, EyeOff, Mail, Lock, User, LogOut, ChevronRight } from "lucide-react";
+import BottomNav from "@/components/BottomNav";
 import { useTheme } from "@/components/ThemeProvider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
