@@ -43,13 +43,6 @@ const HomePage = () => {
               <span className="text-xs font-bold text-accent-foreground">{MOCK_STREAK}</span>
             </div>
             <button
-              onClick={() => navigate("/profile")}
-              className="rounded-full p-2 hover:bg-muted transition-colors"
-              aria-label="Perfil"
-            >
-              <UserCircle className="h-5 w-5 text-foreground" />
-            </button>
-            <button
               onClick={toggleTheme}
               className="rounded-full p-2 hover:bg-muted transition-colors"
               aria-label="Toggle theme"
