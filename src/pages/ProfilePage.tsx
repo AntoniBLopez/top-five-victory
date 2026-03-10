@@ -80,7 +80,7 @@ const ProfilePage = () => {
   };
 
   return (
-    <div className="min-h-[100dvh] bg-background">
+    <div className="min-h-[100dvh] bg-background pb-20">
       {/* Header */}
       <header className="sticky top-0 z-10 border-b border-border bg-background/80 backdrop-blur-lg">
         <div className="mx-auto flex max-w-lg items-center justify-between px-4 py-3">
