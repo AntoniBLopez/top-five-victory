@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { ChevronDown, ChevronLeft, Search } from "lucide-react";
+import { ChevronDown, ChevronLeft, Search, Lock } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CONJUGATION_BY_TENSE } from "@/data/mockConjugations";
 import { WordsArray } from "@/types/game";
