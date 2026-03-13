@@ -115,6 +115,7 @@ const VerbListView = ({
           </div>
         )}
       </div>
+    </>
   );
 };
 
