@@ -74,28 +74,11 @@ const VerbListView = ({
       </div>
 
       {/* Verb list */}
-      <div className="px-4 pt-2 pb-4 space-y-2">
-        {/* Free verbs */}
+      <div className="px-4 pt-2 pb-4">
         <div className="divide-y divide-border rounded-2xl border border-border bg-card overflow-hidden">
-          {filtered.slice(0, FREE_VERB_COUNT).map((verbData, i) => (
-            <motion.button
-              key={verbData.verb}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.02, duration: 0.2 }}
-              onClick={() => onSelect(verbData)}
-              className="flex w-full items-center justify-between px-5 py-4 transition-colors hover:bg-muted/40 active:bg-muted/60"
-            >
-              <span className="text-[15px] font-bold text-foreground">{verbData.verb}</span>
-              <ChevronDown className="h-4 w-4 text-muted-foreground -rotate-90" />
-            </motion.button>
-          ))}
-        </div>
-
-        {/* Locked verbs */}
-        {filtered.length > FREE_VERB_COUNT && (
-          <div className="divide-y divide-border/50 rounded-2xl border border-border/50 bg-card/50 overflow-hidden relative">
-            {filtered.slice(FREE_VERB_COUNT).map((verbData, i) => (
+          {filtered.map((verbData, i) => {
+            const isLocked = i >= FREE_VERB_COUNT;
+            return isLocked ? (
               <motion.div
                 key={verbData.verb}
                 initial={{ opacity: 0, y: 8 }}
@@ -109,9 +92,20 @@ const VerbListView = ({
                   PRO
                 </span>
               </motion.div>
-            ))}
-          </div>
-        )}
+            ) : (
+              <motion.button
+                key={verbData.verb}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.02, duration: 0.2 }}
+                onClick={() => onSelect(verbData)}
+                className="flex w-full items-center justify-between px-5 py-4 transition-colors hover:bg-muted/40 active:bg-muted/60"
+              >
+                <span className="text-[15px] font-bold text-foreground">{verbData.verb}</span>
+                <ChevronDown className="h-4 w-4 text-muted-foreground -rotate-90" />
+              </motion.button>
+            );
+          })}
 
         {filtered.length === 0 && (
           <div className="px-5 py-8 text-center text-sm text-muted-foreground">
