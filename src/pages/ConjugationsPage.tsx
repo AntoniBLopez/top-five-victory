@@ -107,13 +107,14 @@ const VerbListView = ({
             );
           })}
 
+        </div>
+
         {filtered.length === 0 && (
           <div className="px-5 py-8 text-center text-sm text-muted-foreground">
             No se encontraron verbos
           </div>
         )}
       </div>
-    </>
   );
 };
 
