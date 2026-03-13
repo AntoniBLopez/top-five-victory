@@ -39,6 +39,8 @@ function parseConjugations(): VerbData[] {
 }
 
 // Verb list view
+const FREE_VERB_COUNT = 5;
+
 const VerbListView = ({
   verbs,
   onSelect,
@@ -68,9 +70,10 @@ const VerbListView = ({
       </div>
 
       {/* Verb list */}
-      <div className="px-4 pt-2 pb-4">
+      <div className="px-4 pt-2 pb-4 space-y-2">
+        {/* Free verbs */}
         <div className="divide-y divide-border rounded-2xl border border-border bg-card overflow-hidden">
-          {filtered.map((verbData, i) => (
+          {filtered.slice(0, FREE_VERB_COUNT).map((verbData, i) => (
             <motion.button
               key={verbData.verb}
               initial={{ opacity: 0, y: 8 }}
@@ -83,12 +86,34 @@ const VerbListView = ({
               <ChevronDown className="h-4 w-4 text-muted-foreground -rotate-90" />
             </motion.button>
           ))}
-          {filtered.length === 0 && (
-            <div className="px-5 py-8 text-center text-sm text-muted-foreground">
-              No se encontraron verbos
-            </div>
-          )}
         </div>
+
+        {/* Locked verbs */}
+        {filtered.length > FREE_VERB_COUNT && (
+          <div className="divide-y divide-border/50 rounded-2xl border border-border/50 bg-card/50 overflow-hidden relative">
+            {filtered.slice(FREE_VERB_COUNT).map((verbData, i) => (
+              <motion.div
+                key={verbData.verb}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 0.5, y: 0 }}
+                transition={{ delay: i * 0.02, duration: 0.2 }}
+                className="flex w-full items-center justify-between px-5 py-4 cursor-not-allowed select-none"
+              >
+                <span className="text-[15px] font-bold text-muted-foreground">{verbData.verb}</span>
+                <span className="inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/30 px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-amber-600 dark:text-amber-400">
+                  <Lock className="h-3 w-3" />
+                  PRO
+                </span>
+              </motion.div>
+            ))}
+          </div>
+        )}
+
+        {filtered.length === 0 && (
+          <div className="px-5 py-8 text-center text-sm text-muted-foreground">
+            No se encontraron verbos
+          </div>
+        )}
       </div>
     </>
   );
