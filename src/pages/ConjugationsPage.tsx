@@ -4,6 +4,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { CONJUGATION_BY_TENSE } from "@/data/mockConjugations";
 import { WordsArray } from "@/types/game";
 import BottomNav from "@/components/BottomNav";
+import ConjugationSettings, {
+  ConjugationFilters,
+  DEFAULT_FILTERS,
+} from "@/components/conjugations/ConjugationSettings";
 
 interface VerbData {
   verb: string;
@@ -123,9 +127,11 @@ const VerbListView = ({
 const VerbDetailView = ({
   verbData,
   onBack,
+  filters,
 }: {
   verbData: VerbData;
   onBack: () => void;
+  filters: ConjugationFilters;
 }) => {
   const [collapsedTenses, setCollapsedTenses] = useState<Set<string>>(new Set());
 
@@ -137,6 +143,19 @@ const VerbDetailView = ({
       return next;
     });
   };
+
+  // Filter tenses and pronouns based on settings
+  const filteredTenses = useMemo(() => {
+    const result: Record<string, { pronoun: string; form: string }[]> = {};
+    for (const [tense, forms] of Object.entries(verbData.tenses)) {
+      if (!(filters.tenses[tense] ?? true)) continue;
+      const filteredForms = forms.filter(
+        ({ pronoun }) => filters.pronouns[pronoun] ?? true
+      );
+      if (filteredForms.length > 0) result[tense] = filteredForms;
+    }
+    return result;
+  }, [verbData, filters]);
 
   return (
     <motion.div
@@ -160,11 +179,15 @@ const VerbDetailView = ({
 
       {/* Tense sections */}
       <div className="mx-auto max-w-2xl px-4 pt-4 pb-6 space-y-1">
-        {Object.entries(verbData.tenses).map(([tense, forms]) => {
+        {Object.keys(filteredTenses).length === 0 && (
+          <div className="px-1 py-8 text-center text-sm text-muted-foreground">
+            No hay conjugaciones con los filtros actuales
+          </div>
+        )}
+        {Object.entries(filteredTenses).map(([tense, forms]) => {
           const isCollapsed = collapsedTenses.has(tense);
           return (
             <div key={tense}>
-              {/* Tense header */}
               <button
                 onClick={() => toggleTense(tense)}
                 className="flex w-full items-center justify-between py-4"
@@ -176,8 +199,6 @@ const VerbDetailView = ({
                   className={`h-4 w-4 text-muted-foreground transition-transform duration-200 ${isCollapsed ? "" : "rotate-180"}`}
                 />
               </button>
-
-              {/* Conjugation rows */}
               <AnimatePresence initial={false}>
                 {!isCollapsed && (
                   <motion.div
@@ -206,8 +227,6 @@ const VerbDetailView = ({
                   </motion.div>
                 )}
               </AnimatePresence>
-
-              {/* Separator line after section */}
               <div className="border-b border-border" />
             </div>
           );
@@ -220,13 +239,16 @@ const VerbDetailView = ({
 const ConjugationsPage = () => {
   const verbs = useMemo(parseConjugations, []);
   const [selectedVerb, setSelectedVerb] = useState<VerbData | null>(null);
+  const [filters, setFilters] = useState<ConjugationFilters>(DEFAULT_FILTERS);
 
   return (
     <div className="min-h-[100dvh] bg-background pb-20">
       {/* Top header */}
       <header className="sticky top-0 z-20 border-b border-border bg-background/80 backdrop-blur-lg">
-        <div className="mx-auto flex max-w-2xl items-center justify-center px-4 py-3">
+        <div className="mx-auto flex max-w-2xl items-center justify-between px-4 py-3">
+          <div className="w-9" />
           <h1 className="text-base font-bold text-foreground">Conjugaciones</h1>
+          <ConjugationSettings filters={filters} onChange={setFilters} />
         </div>
       </header>
 
@@ -237,6 +259,7 @@ const ConjugationsPage = () => {
               key={selectedVerb.verb}
               verbData={selectedVerb}
               onBack={() => setSelectedVerb(null)}
+              filters={filters}
             />
           ) : (
             <motion.div
