@@ -233,6 +233,26 @@ const DashboardView = ({ onStartReview, onOpenLibrary }: { onStartReview: () => 
         </div>
       </motion.div>
 
+      {/* Achievements CTA */}
+      <motion.button
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, delay: 0.35 }}
+        onClick={() => navigate("/achievements")}
+        className="flex w-full items-center justify-between rounded-2xl border border-border bg-card p-5 transition-colors hover:bg-muted/40 active:bg-muted/60"
+      >
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent/15">
+            <Trophy className="h-5 w-5 text-accent-foreground" />
+          </div>
+          <div className="text-left">
+            <p className="text-sm font-bold text-foreground">Logros y niveles</p>
+            <p className="text-xs text-muted-foreground">Desbloquea badges y sube de nivel</p>
+          </div>
+        </div>
+        <ChevronRight className="h-5 w-5 text-muted-foreground" />
+      </motion.button>
+
       {/* Verb Library CTA */}
       <motion.button
         initial={{ opacity: 0, y: 16 }}
