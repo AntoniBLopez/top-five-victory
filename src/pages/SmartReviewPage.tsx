@@ -403,15 +403,25 @@ const SmartReviewPage = () => {
   if (queue.length === 0 && !sessionDone) {
     return (
       <div className="flex min-h-[100dvh] flex-col items-center justify-center bg-background px-6 text-center">
-        <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring" }}
-          className="mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-primary/10 text-5xl">
+        <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", stiffness: 200 }}
+          className="mb-6 flex h-28 w-28 items-center justify-center rounded-3xl bg-primary/10 text-6xl">
           🎉
         </motion.div>
-        <h2 className="text-2xl font-extrabold text-foreground">¡Todo al día!</h2>
-        <p className="mt-2 text-sm text-muted-foreground">No hay cards pendientes. Vuelve más tarde.</p>
-        <button onClick={() => navigate("/conjugations")} className="mt-8 rounded-2xl bg-primary px-8 py-4 text-base font-extrabold text-primary-foreground">
-          Volver al dashboard
-        </button>
+        <motion.h2 initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
+          className="text-2xl font-extrabold text-foreground">¡Todo al día!</motion.h2>
+        <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}
+          className="mt-3 max-w-xs text-sm text-muted-foreground leading-relaxed">
+          No hay tarjetas pendientes por ahora. Tu próximo repaso está programado automáticamente.
+        </motion.p>
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
+          className="mt-8 flex flex-col gap-3 w-full max-w-xs">
+          <button onClick={() => navigate("/conjugations")} className="rounded-2xl bg-primary px-8 py-4 text-base font-extrabold text-primary-foreground transition-opacity hover:opacity-90 active:scale-[0.98]">
+            Volver al dashboard
+          </button>
+          <button onClick={() => navigate("/analytics")} className="rounded-2xl border border-border bg-card px-8 py-3.5 text-sm font-bold text-foreground transition-colors hover:bg-muted/50">
+            Ver analíticas
+          </button>
+        </motion.div>
       </div>
     );
   }

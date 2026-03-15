@@ -565,7 +565,9 @@ const OnboardingPage = () => {
         completedAt: new Date().toISOString(),
       })
     );
-    navigate("/conjugations");
+    // Clear streak session flag so it shows on first dashboard visit
+    sessionStorage.removeItem("streak_shown_conj");
+    navigate("/conjugations", { replace: true });
   };
 
   const STEPS: Step[] = ["welcome", "goals", "calibration", "results"];

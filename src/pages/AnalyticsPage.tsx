@@ -69,7 +69,7 @@ const AnalyticsPage = () => {
   const allTenses = Array.from(new Set(verbMastery.flatMap((v) => Object.keys(v.tenses))));
 
   return (
-    <div className="min-h-screen bg-background pb-24">
+    <div className="min-h-[100dvh] bg-background pb-24">
       {/* Header */}
       <div className="sticky top-0 z-20 border-b border-border bg-background/90 backdrop-blur-lg">
         <div className="mx-auto flex max-w-2xl items-center gap-3 px-4 py-3">
