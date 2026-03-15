@@ -1,6 +1,9 @@
 import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { X, Volume2, Check, AlertCircle, Zap, Brain, Target, RotateCcw } from "lucide-react";
+import { getStats } from "@/lib/fsrs";
+import { updateContextFromStats, checkAchievements, recordPerfectSession, recordSession, type Achievement } from "@/lib/achievements";
+import AchievementUnlockPopup from "@/components/AchievementUnlockPopup";
 import { motion, AnimatePresence } from "framer-motion";
 import { MOCK_SENTENCES, generateTableClozeCards, type SentenceCloze, type TableClozeCard } from "@/data/mockSentences";
 import { Progress } from "@/components/ui/progress";
