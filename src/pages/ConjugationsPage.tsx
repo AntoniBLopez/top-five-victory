@@ -449,6 +449,22 @@ const ConjugationsPage = () => {
   const [selectedVerb, setSelectedVerb] = useState<VerbData | null>(null);
   const [filters, setFilters] = useState<ConjugationFilters>(DEFAULT_FILTERS);
 
+  // Initialize FSRS cards on mount
+  useEffect(() => {
+    const sentenceCards = MOCK_SENTENCES.map((s, i) => ({
+      id: `sent:${s.verb}:${s.tense}:${s.pronoun}:${i}`,
+      verb: s.verb,
+      tense: s.tense,
+      pronoun: s.pronoun,
+    }));
+    const tableCards = generateTableClozeCards().map((t, i) => ({
+      id: `table:${t.verb}:${t.tense}:${i}`,
+      verb: t.verb,
+      tense: t.tense,
+    }));
+    initializeCards(sentenceCards, tableCards);
+  }, []);
+
   const handleStartReview = () => {
     navigate("/conjugations/review");
   };
