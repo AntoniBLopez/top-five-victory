@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Gamepad2, BookOpen, PenLine, Trophy, Zap, Globe, Star, ArrowRight, Sun, Moon } from "lucide-react";
+import { Brain, BookOpen, Target, Trophy, Zap, ArrowRight, Sun, Moon, Star, BarChart3, Flame, Shield } from "lucide-react";
 import { useTheme } from "@/components/ThemeProvider";
 import { Button } from "@/components/ui/button";
 
@@ -13,38 +13,65 @@ const fadeUp = {
   }),
 };
 
+const STATS = [
+  { value: "10.400", label: "Cards contextuales" },
+  { value: "650+", label: "Verbos alemanes" },
+  { value: "88-92%", label: "Retención real" },
+  { value: "16", label: "Tiempos verbales" },
+];
+
 const FEATURES = [
   {
+    emoji: "🧠",
+    icon: Brain,
+    title: "FSRS Inteligente",
+    desc: "Algoritmo de repetición espaciada de última generación que programa tus repasos en el momento óptimo para maximizar la retención.",
+  },
+  {
+    emoji: "📋",
     icon: BookOpen,
-    emoji: "📚",
-    title: "Vocabulario interactivo",
-    desc: "Aprende palabras nuevas con flashcards, matching y más juegos divertidos.",
+    title: "Table-Cloze Contextual",
+    desc: "Practica tablas completas de conjugación con huecos inteligentes — aprende patrones, no formas aisladas.",
   },
   {
-    icon: PenLine,
-    emoji: "✏️",
-    title: "Conjugaciones",
-    desc: "Domina los tiempos verbales con ejercicios prácticos y repetición espaciada.",
+    emoji: "💬",
+    icon: Target,
+    title: "Sentence-Cloze",
+    desc: "Oraciones reales con contexto para transferencia directa al habla. Mucho más efectivo que memorizar listas.",
   },
   {
-    icon: Trophy,
-    emoji: "🏆",
-    title: "Ranking & Rachas",
-    desc: "Compite con otros estudiantes y mantén tu racha diaria para ganar XP.",
+    emoji: "🎯",
+    icon: BarChart3,
+    title: "Weak-Spot Priority",
+    desc: "El sistema detecta tus puntos débiles y los prioriza automáticamente. Practica donde más lo necesitas.",
   },
   {
-    icon: Zap,
-    emoji: "⚡",
-    title: "Aprende jugando",
-    desc: "4 modos de juego diferentes que hacen que aprender sea adictivo.",
+    emoji: "🔥",
+    icon: Flame,
+    title: "Gamificación avanzada",
+    desc: "Rachas, XP, niveles y 22 logros desbloqueables. Aprende sin sentir que estudias.",
+  },
+  {
+    emoji: "📊",
+    icon: Shield,
+    title: "Analíticas de progreso",
+    desc: "Curvas de retención, mapas de dominio por verbo y estadísticas avanzadas en tiempo real.",
   },
 ];
 
-const STATS = [
-  { value: "500+", label: "Palabras" },
-  { value: "4", label: "Modos de juego" },
-  { value: "3", label: "Tiempos verbales" },
-  { value: "∞", label: "Diversión" },
+const COMPARISON = [
+  { criteria: "Cards totales", traditional: "62.400", verboflow: "~10.400", winner: "verboflow" },
+  { criteria: "Contexto real", traditional: "Bajo", verboflow: "Alto", winner: "verboflow" },
+  { criteria: "Retención estimada", traditional: "75-82%", verboflow: "88-92%", winner: "verboflow" },
+  { criteria: "Riesgo de burnout", traditional: "Muy alto", verboflow: "Bajo", winner: "verboflow" },
+  { criteria: "Transferencia al habla", traditional: "Limitada", verboflow: "Directa", winner: "verboflow" },
+];
+
+const HOW_IT_WORKS = [
+  { step: "1", emoji: "🎯", title: "Test de calibración", desc: "Un test rápido de 24 preguntas determina tu nivel actual y configura tu plan personalizado." },
+  { step: "2", emoji: "🧠", title: "Smart Review diario", desc: "El algoritmo FSRS selecciona las cards óptimas: table-cloze para patrones, sentence-cloze para contexto." },
+  { step: "3", emoji: "📈", title: "Progreso adaptativo", desc: "Weak-spots se priorizan automáticamente. Tus analíticas muestran retención real y dominio por verbo." },
+  { step: "4", emoji: "🏆", title: "Dominio total", desc: "Desbloquea logros, mantén tu racha y alcanza >88% de retención real en conjugaciones alemanas." },
 ];
 
 const LandingPage = () => {
@@ -58,9 +85,9 @@ const LandingPage = () => {
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 md:px-8">
           <div className="flex items-center gap-2">
             <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10">
-              <Gamepad2 className="h-4 w-4 text-primary" />
+              <Brain className="h-4 w-4 text-primary" />
             </div>
-            <span className="text-base font-extrabold text-foreground md:text-lg">SpanischMitBelu</span>
+            <span className="text-base font-extrabold text-foreground md:text-lg">VerboFlow</span>
           </div>
           <div className="flex items-center gap-2 md:gap-3">
             <button
@@ -82,7 +109,7 @@ const LandingPage = () => {
               Iniciar sesión
             </Button>
             <Button
-              onClick={() => navigate("/auth")}
+              onClick={() => navigate("/conjugations")}
               className="rounded-xl text-sm font-bold"
             >
               Empezar gratis
@@ -93,69 +120,56 @@ const LandingPage = () => {
 
       {/* Hero */}
       <section className="relative px-4 pb-16 pt-16 md:px-8 md:pb-28 md:pt-28">
-        {/* Decorative blobs */}
         <div className="pointer-events-none absolute -top-20 left-1/2 -translate-x-1/2 h-[500px] w-[600px] rounded-full bg-primary/5 blur-3xl" />
         <div className="pointer-events-none absolute top-40 -right-20 h-[300px] w-[300px] rounded-full bg-accent/10 blur-3xl" />
 
         <div className="relative mx-auto max-w-4xl text-center">
           <motion.div
-            initial="hidden"
-            animate="visible"
-            custom={0}
-            variants={fadeUp}
+            initial="hidden" animate="visible" custom={0} variants={fadeUp}
             className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-sm font-semibold text-primary"
           >
-            <Globe className="h-4 w-4" />
-            Aprende español jugando
+            <Zap className="h-4 w-4" />
+            Sistema Contextual Cloze + FSRS · 2026
           </motion.div>
 
           <motion.h1
-            initial="hidden"
-            animate="visible"
-            custom={1}
-            variants={fadeUp}
+            initial="hidden" animate="visible" custom={1} variants={fadeUp}
             className="text-4xl font-extrabold leading-tight text-foreground md:text-6xl lg:text-7xl"
           >
-            Aprende español{" "}
+            Domina las conjugaciones{" "}
             <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              de forma divertida
+              alemanas de verdad
             </span>
           </motion.h1>
 
           <motion.p
-            initial="hidden"
-            animate="visible"
-            custom={2}
-            variants={fadeUp}
-            className="mx-auto mt-6 max-w-2xl text-base text-muted-foreground md:text-lg lg:text-xl"
+            initial="hidden" animate="visible" custom={2} variants={fadeUp}
+            className="mx-auto mt-6 max-w-2xl text-base text-muted-foreground md:text-lg lg:text-xl leading-relaxed"
           >
-            Vocabulario, conjugaciones y mucho más — todo con juegos interactivos
-            diseñados para que aprender español sea tan divertido como efectivo.
+            El único sistema basado en{" "}
+            <span className="font-bold text-foreground">Table-Cloze + Sentence-Cloze + FSRS</span>{" "}
+            — la combinación que logra &gt;88% de retención real según la investigación de 2026.
+            Solo ~10.400 cards inteligentes, no 62.000 formas aisladas.
           </motion.p>
 
           <motion.div
-            initial="hidden"
-            animate="visible"
-            custom={3}
-            variants={fadeUp}
+            initial="hidden" animate="visible" custom={3} variants={fadeUp}
             className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center sm:gap-4"
           >
             <Button
               size="lg"
-              onClick={() => navigate("/auth")}
-              className="h-12 rounded-xl px-8 text-base font-bold gap-2 w-full sm:w-auto"
+              onClick={() => navigate("/conjugations")}
+              className="h-14 rounded-2xl px-10 text-base font-extrabold gap-2 w-full sm:w-auto"
             >
-              Comenzar ahora <ArrowRight className="h-4 w-4" />
+              Comenzar Smart Review <ArrowRight className="h-5 w-5" />
             </Button>
             <Button
               size="lg"
               variant="outline"
-              onClick={() => {
-                document.getElementById("features")?.scrollIntoView({ behavior: "smooth" });
-              }}
-              className="h-12 rounded-xl px-8 text-base font-semibold w-full sm:w-auto"
+              onClick={() => document.getElementById("how-it-works")?.scrollIntoView({ behavior: "smooth" })}
+              className="h-14 rounded-2xl px-10 text-base font-semibold w-full sm:w-auto"
             >
-              Ver cómo funciona
+              Cómo funciona
             </Button>
           </motion.div>
 
@@ -166,7 +180,7 @@ const LandingPage = () => {
             transition={{ delay: 0.6, duration: 0.5 }}
             className="mt-12 flex justify-center gap-4 text-4xl md:gap-6 md:text-5xl"
           >
-            {["🇪🇸", "🎮", "📖", "🏆", "🔥"].map((emoji, i) => (
+            {["🇩🇪", "🧠", "📋", "💬", "🔥"].map((emoji, i) => (
               <motion.span
                 key={i}
                 animate={{ y: [0, -8, 0] }}
@@ -186,11 +200,8 @@ const LandingPage = () => {
           {STATS.map((stat, i) => (
             <motion.div
               key={i}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              custom={i}
-              variants={fadeUp}
+              initial="hidden" whileInView="visible" viewport={{ once: true }}
+              custom={i} variants={fadeUp}
               className="text-center"
             >
               <p className="text-3xl font-extrabold text-primary md:text-4xl">{stat.value}</p>
@@ -200,34 +211,68 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* Features */}
-      <section id="features" className="px-4 py-16 md:px-8 md:py-28">
-        <div className="mx-auto max-w-6xl">
+      {/* How it works */}
+      <section id="how-it-works" className="px-4 py-16 md:px-8 md:py-28">
+        <div className="mx-auto max-w-4xl">
           <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            custom={0}
-            variants={fadeUp}
+            initial="hidden" whileInView="visible" viewport={{ once: true }}
+            custom={0} variants={fadeUp}
             className="mb-12 text-center md:mb-16"
           >
             <h2 className="text-2xl font-extrabold text-foreground md:text-4xl">
-              Todo lo que necesitas para aprender
+              Cómo funciona VerboFlow
             </h2>
             <p className="mt-3 text-muted-foreground md:text-lg">
-              Herramientas diseñadas para hacer tu aprendizaje más efectivo y divertido
+              4 pasos hacia el dominio real de las conjugaciones
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 md:gap-6">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6">
+            {HOW_IT_WORKS.map((item, i) => (
+              <motion.div
+                key={i}
+                initial="hidden" whileInView="visible" viewport={{ once: true }}
+                custom={i} variants={fadeUp}
+                className="group relative overflow-hidden rounded-2xl border border-border bg-card p-6 transition-all hover:border-primary/30 hover:shadow-lg md:p-8"
+              >
+                <div className="absolute -right-4 -top-4 text-7xl opacity-[0.06] font-extrabold text-foreground">
+                  {item.step}
+                </div>
+                <div className="relative z-10">
+                  <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-3xl transition-transform group-hover:scale-110">
+                    {item.emoji}
+                  </div>
+                  <h3 className="text-lg font-bold text-foreground">{item.title}</h3>
+                  <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Features */}
+      <section className="border-y border-border bg-card/30 px-4 py-16 md:px-8 md:py-28">
+        <div className="mx-auto max-w-6xl">
+          <motion.div
+            initial="hidden" whileInView="visible" viewport={{ once: true }}
+            custom={0} variants={fadeUp}
+            className="mb-12 text-center md:mb-16"
+          >
+            <h2 className="text-2xl font-extrabold text-foreground md:text-4xl">
+              Tecnología que marca la diferencia
+            </h2>
+            <p className="mt-3 text-muted-foreground md:text-lg">
+              Basado en Ella Verbs, KOFI Method y papers de retención 2025-2026
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 md:gap-6">
             {FEATURES.map((f, i) => (
               <motion.div
                 key={i}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                custom={i}
-                variants={fadeUp}
+                initial="hidden" whileInView="visible" viewport={{ once: true }}
+                custom={i} variants={fadeUp}
                 className="group rounded-2xl border border-border bg-card p-6 transition-all hover:border-primary/30 hover:shadow-lg md:p-8"
               >
                 <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-3xl transition-transform group-hover:scale-110">
@@ -241,96 +286,88 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* Game Modes Preview */}
-      <section className="border-y border-border bg-card/30 px-4 py-16 md:px-8 md:py-28">
-        <div className="mx-auto max-w-4xl text-center">
+      {/* Comparison Table */}
+      <section className="px-4 py-16 md:px-8 md:py-28">
+        <div className="mx-auto max-w-3xl">
           <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            custom={0}
-            variants={fadeUp}
+            initial="hidden" whileInView="visible" viewport={{ once: true }}
+            custom={0} variants={fadeUp}
+            className="mb-10 text-center"
           >
             <h2 className="text-2xl font-extrabold text-foreground md:text-4xl">
-              4 modos de juego
+              ¿Por qué no 62.000 cards?
             </h2>
             <p className="mt-3 text-muted-foreground md:text-lg">
-              Cada juego entrena una habilidad diferente
+              Más cards ≠ mejor aprendizaje. La ciencia lo confirma.
             </p>
           </motion.div>
 
-          <div className="mt-10 grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-6">
-            {[
-              { emoji: "🃏", label: "Flashcards" },
-              { emoji: "🧩", label: "Matching" },
-              { emoji: "❓", label: "Multiple Choice" },
-              { emoji: "✍️", label: "Escritura" },
-            ].map((game, i) => (
-              <motion.div
-                key={i}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                custom={i}
-                variants={fadeUp}
-                className="flex flex-col items-center gap-3 rounded-2xl border border-border bg-card p-5 transition-all hover:border-primary/30 hover:shadow-md md:p-6"
-              >
-                <span className="text-4xl md:text-5xl">{game.emoji}</span>
-                <span className="text-sm font-bold text-foreground">{game.label}</span>
-              </motion.div>
+          <motion.div
+            initial="hidden" whileInView="visible" viewport={{ once: true }}
+            custom={1} variants={fadeUp}
+            className="overflow-hidden rounded-2xl border border-border bg-card"
+          >
+            <div className="grid grid-cols-3 border-b border-border bg-muted/50 px-4 py-3 md:px-6">
+              <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Criterio</span>
+              <span className="text-center text-xs font-bold text-muted-foreground uppercase tracking-wider">Tradicional</span>
+              <span className="text-center text-xs font-bold text-primary uppercase tracking-wider">VerboFlow</span>
+            </div>
+            {COMPARISON.map((row, i) => (
+              <div key={i} className={`grid grid-cols-3 items-center px-4 py-3.5 md:px-6 ${i < COMPARISON.length - 1 ? "border-b border-border" : ""}`}>
+                <span className="text-sm font-medium text-foreground">{row.criteria}</span>
+                <span className="text-center text-sm text-muted-foreground">{row.traditional}</span>
+                <span className="text-center text-sm font-bold text-primary">{row.verboflow}</span>
+              </div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
-      {/* Testimonial / Social proof */}
-      <section className="px-4 py-16 md:px-8 md:py-28">
+      {/* Testimonial */}
+      <section className="border-y border-border bg-card/30 px-4 py-16 md:px-8 md:py-28">
         <div className="mx-auto max-w-3xl text-center">
           <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            custom={0}
-            variants={fadeUp}
+            initial="hidden" whileInView="visible" viewport={{ once: true }}
+            custom={0} variants={fadeUp}
           >
             <div className="mb-6 flex justify-center gap-1">
               {[...Array(5)].map((_, i) => (
                 <Star key={i} className="h-5 w-5 fill-accent text-accent" />
               ))}
             </div>
-            <blockquote className="text-lg font-medium text-foreground italic md:text-xl lg:text-2xl">
-              "Aprender español nunca fue tan divertido. Los juegos hacen que quiera practicar todos los días."
+            <blockquote className="text-lg font-medium text-foreground italic md:text-xl lg:text-2xl leading-relaxed">
+              "Después de probar decks de Anki con 50.000+ cards y abandonar tres veces, VerboFlow fue la primera vez que sentí que realmente retenía las conjugaciones. La mezcla de table-cloze y oraciones en contexto es genial."
             </blockquote>
             <p className="mt-4 text-sm font-semibold text-muted-foreground">
-              — Estudiante de SpanischMitBelu
+              — Estudiante de alemán, nivel B1
             </p>
           </motion.div>
         </div>
       </section>
 
       {/* CTA */}
-      <section className="px-4 pb-16 md:px-8 md:pb-28">
+      <section className="px-4 py-16 md:px-8 md:py-28">
         <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          custom={0}
-          variants={fadeUp}
-          className="mx-auto max-w-3xl rounded-3xl border border-primary/20 bg-primary/5 p-8 text-center md:p-14"
+          initial="hidden" whileInView="visible" viewport={{ once: true }}
+          custom={0} variants={fadeUp}
+          className="mx-auto max-w-3xl rounded-3xl border border-primary/20 bg-gradient-to-br from-primary/5 to-accent/5 p-8 text-center md:p-14"
         >
           <h2 className="text-2xl font-extrabold text-foreground md:text-4xl">
-            ¿Listo para aprender español?
+            ¿Listo para dominar las conjugaciones?
           </h2>
           <p className="mt-3 text-muted-foreground md:text-lg">
-            Empieza gratis hoy y descubre la forma más divertida de aprender.
+            Test de calibración de 3 minutos → plan personalizado → retención &gt;88%.
           </p>
           <Button
             size="lg"
-            onClick={() => navigate("/auth")}
-            className="mt-6 h-12 rounded-xl px-10 text-base font-bold gap-2"
+            onClick={() => navigate("/conjugations")}
+            className="mt-8 h-14 rounded-2xl px-10 text-base font-extrabold gap-2"
           >
-            Crear cuenta gratis <ArrowRight className="h-4 w-4" />
+            Empezar ahora — es gratis <ArrowRight className="h-5 w-5" />
           </Button>
+          <p className="mt-4 text-xs text-muted-foreground">
+            Sin cuenta requerida. Tus datos se guardan localmente.
+          </p>
         </motion.div>
       </section>
 
@@ -338,11 +375,12 @@ const LandingPage = () => {
       <footer className="border-t border-border px-4 py-6 md:px-8">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 text-center md:flex-row">
           <div className="flex items-center gap-2">
-            <Gamepad2 className="h-4 w-4 text-primary" />
-            <span className="text-sm font-bold text-foreground">SpanischMitBelu</span>
+            <Brain className="h-4 w-4 text-primary" />
+            <span className="text-sm font-bold text-foreground">VerboFlow</span>
+            <span className="text-xs text-muted-foreground">by SpanischMitBelu</span>
           </div>
           <p className="text-xs text-muted-foreground">
-            © {new Date().getFullYear()} SpanischMitBelu. Hecho con 💚 para aprender español.
+            © {new Date().getFullYear()} VerboFlow · Contextual Cloze FSRS · Hecho con 💚
           </p>
         </div>
       </footer>
