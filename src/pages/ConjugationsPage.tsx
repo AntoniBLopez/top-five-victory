@@ -43,6 +43,12 @@ const TENSE_COLORS: Record<string, { emoji: string; color: string }> = {
   "Perfekt": { emoji: "🟢", color: "from-emerald-500 to-green-400" },
 };
 
+// ── Types ──
+interface VerbData {
+  verb: string;
+  tenses: Record<string, { pronoun: string; form: string }[]>;
+}
+
 function parseConjugations(): VerbData[] {
   const verbMap = new Map<string, Record<string, { pronoun: string; form: string }[]>>();
   const tenseKeys = ["prasens", "prateritum", "perfekt"] as const;
