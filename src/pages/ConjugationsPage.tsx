@@ -164,6 +164,37 @@ const DashboardView = ({ onStartReview, onOpenLibrary }: { onStartReview: () => 
         </div>
       </motion.div>
 
+      {/* Daily Goal Progress */}
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, delay: 0.15 }}
+        className="rounded-2xl border border-border bg-card p-4"
+      >
+        <div className="mb-2 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Target className="h-4 w-4 text-primary" />
+            <span className="text-sm font-bold text-foreground">Objetivo diario</span>
+          </div>
+          <span className="text-xs font-bold text-muted-foreground">
+            {stats.totalReviewed}/{dailyGoal}
+          </span>
+        </div>
+        <div className="h-2.5 w-full overflow-hidden rounded-full bg-muted">
+          <motion.div
+            initial={{ width: 0 }}
+            animate={{ width: `${dailyProgress}%` }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            className={`h-full rounded-full ${dailyProgress >= 100 ? "bg-emerald-500" : "bg-primary"}`}
+          />
+        </div>
+        {dailyProgress >= 100 && (
+          <p className="mt-2 text-center text-xs font-bold text-emerald-600 dark:text-emerald-400">
+            🎉 ¡Objetivo cumplido!
+          </p>
+        )}
+      </motion.div>
+
       {/* Tense Progress */}
       <motion.div
         initial={{ opacity: 0, y: 16 }}
