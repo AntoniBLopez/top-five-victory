@@ -37,17 +37,6 @@ import {
 } from "@/lib/fsrs";
 import { MOCK_SENTENCES, generateTableClozeCards } from "@/data/mockSentences";
 
-// ── Mock FSRS-like stats (will be replaced with real data later) ──
-const MOCK_STATS = {
-  streak: 7,
-  dueToday: 12,
-  totalReviewed: 156,
-  retentionRate: 87,
-  xpToday: 45,
-  masteredVerbs: 3,
-  totalVerbs: 10,
-};
-
 const TENSE_COLORS: Record<string, { emoji: string; color: string }> = {
   "Präsens": { emoji: "🔵", color: "from-blue-500 to-cyan-400" },
   "Präteritum": { emoji: "🟠", color: "from-orange-500 to-amber-400" },
