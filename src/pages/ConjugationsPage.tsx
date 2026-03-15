@@ -79,7 +79,9 @@ function parseConjugations(): VerbData[] {
 
 // ── Dashboard View ──
 const DashboardView = ({ onStartReview, onOpenLibrary }: { onStartReview: () => void; onOpenLibrary: () => void }) => {
-  const stats = MOCK_STATS;
+  const stats = useMemo(() => getStats(), []);
+  const tenseProgress = useMemo(() => getTenseProgress(), []);
+  const weakSpots = useMemo(() => getWeakSpots(), []);
 
   return (
     <div className="space-y-6 px-4 pb-8 pt-6">
