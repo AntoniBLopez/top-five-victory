@@ -480,6 +480,93 @@ export function getWeakSpots(limit = 4): WeakSpot[] {
   return spots.sort((a, b) => a.accuracy - b.accuracy).slice(0, limit);
 }
 
+// ── Analytics Data ──
+export interface DailyActivity {
+  date: string; // YYYY-MM-DD
+  reviews: number;
+  correct: number;
+  xp: number;
+}
+
+export interface VerbMastery {
+  verb: string;
+  tenses: Record<string, { status: CardStatus; interval: number }>;
+}
+
+export function getDailyActivity(days = 30): DailyActivity[] {
+  const logs = loadLogs();
+  const result: Record<string, { reviews: number; correct: number }> = {};
+  
+  // Initialize last N days
+  for (let i = days - 1; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    result[d.toISOString().split("T")[0]] = { reviews: 0, correct: 0 };
+  }
+  
+  for (const log of logs) {
+    const date = log.timestamp.split("T")[0];
+    if (result[date]) {
+      result[date].reviews++;
+      if (log.correct) result[date].correct++;
+    }
+  }
+  
+  return Object.entries(result).map(([date, data]) => ({
+    date,
+    reviews: data.reviews,
+    correct: data.correct,
+    xp: data.correct * 10 + (data.reviews - data.correct) * 3,
+  }));
+}
+
+export function getRetentionOverTime(days = 30): { date: string; retention: number }[] {
+  const logs = loadLogs();
+  const result: Record<string, { correct: number; total: number }> = {};
+  
+  for (let i = days - 1; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    result[d.toISOString().split("T")[0]] = { correct: 0, total: 0 };
+  }
+  
+  for (const log of logs) {
+    const date = log.timestamp.split("T")[0];
+    if (result[date]) {
+      result[date].total++;
+      if (log.correct) result[date].correct++;
+    }
+  }
+  
+  return Object.entries(result).map(([date, data]) => ({
+    date,
+    retention: data.total > 0 ? Math.round((data.correct / data.total) * 100) : 0,
+  }));
+}
+
+export function getVerbMasteryMap(): VerbMastery[] {
+  const cards = loadCards();
+  const verbMap: Record<string, Record<string, { status: CardStatus; interval: number }>> = {};
+  
+  for (const card of cards) {
+    if (!verbMap[card.verb]) verbMap[card.verb] = {};
+    // For sentence cards with pronouns, aggregate by worst status
+    const existing = verbMap[card.verb][card.tense];
+    if (!existing || card.interval < existing.interval) {
+      verbMap[card.verb][card.tense] = { status: card.status, interval: card.interval };
+    }
+  }
+  
+  return Object.entries(verbMap).map(([verb, tenses]) => ({ verb, tenses }));
+}
+
+export function getCardStatusDistribution(): Record<CardStatus, number> {
+  const cards = loadCards();
+  const dist: Record<CardStatus, number> = { new: 0, learning: 0, review: 0, relearning: 0 };
+  for (const card of cards) dist[card.status]++;
+  return dist;
+}
+
 export function resetAllData() {
   localStorage.removeItem(STORAGE_KEY);
   localStorage.removeItem(LOG_KEY);
