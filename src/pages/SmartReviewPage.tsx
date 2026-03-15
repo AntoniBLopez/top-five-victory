@@ -385,6 +385,20 @@ const SmartReviewPage = () => {
     resetCardState();
   }, [resetCardState]);
 
+  // Achievement check on session done
+  const [newAchievements, setNewAchievements] = useState<Achievement[]>([]);
+
+  useEffect(() => {
+    if (!sessionDone) return;
+    const stats = getStats();
+    const ctx = updateContextFromStats(stats);
+    const accuracy = queue.length > 0 ? Math.round((correctCount / queue.length) * 100) : 0;
+    if (accuracy === 100 && queue.length > 0) recordPerfectSession();
+    else recordSession();
+    const unlocked = checkAchievements(ctx);
+    if (unlocked.length > 0) setNewAchievements(unlocked);
+  }, [sessionDone, correctCount, queue.length]);
+
   // No due cards
   if (queue.length === 0 && !sessionDone) {
     return (
@@ -402,19 +416,6 @@ const SmartReviewPage = () => {
     );
   }
 
-  // Achievement check on session done
-  const [newAchievements, setNewAchievements] = useState<Achievement[]>([]);
-
-  useEffect(() => {
-    if (!sessionDone) return;
-    const stats = getStats();
-    const ctx = updateContextFromStats(stats);
-    const accuracy = queue.length > 0 ? Math.round((correctCount / queue.length) * 100) : 0;
-    if (accuracy === 100 && queue.length > 0) recordPerfectSession();
-    else recordSession();
-    const unlocked = checkAchievements(ctx);
-    if (unlocked.length > 0) setNewAchievements(unlocked);
-  }, [sessionDone, correctCount, queue.length]);
 
   if (sessionDone) {
     return (
