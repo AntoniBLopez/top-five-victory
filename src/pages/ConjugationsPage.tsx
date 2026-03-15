@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   ChevronDown,
@@ -26,30 +26,22 @@ import ConjugationSettings, {
   DEFAULT_FILTERS,
 } from "@/components/conjugations/ConjugationSettings";
 import { Progress } from "@/components/ui/progress";
+import {
+  getStats,
+  getTenseProgress,
+  getWeakSpots,
+  initializeCards,
+  type FSRSStats,
+  type TenseProgress as TenseProgressType,
+  type WeakSpot,
+} from "@/lib/fsrs";
+import { MOCK_SENTENCES, generateTableClozeCards } from "@/data/mockSentences";
 
-// ── Mock FSRS-like stats (will be replaced with real data later) ──
-const MOCK_STATS = {
-  streak: 7,
-  dueToday: 12,
-  totalReviewed: 156,
-  retentionRate: 87,
-  xpToday: 45,
-  masteredVerbs: 3,
-  totalVerbs: 10,
+const TENSE_COLORS: Record<string, { emoji: string; color: string }> = {
+  "Präsens": { emoji: "🔵", color: "from-blue-500 to-cyan-400" },
+  "Präteritum": { emoji: "🟠", color: "from-orange-500 to-amber-400" },
+  "Perfekt": { emoji: "🟢", color: "from-emerald-500 to-green-400" },
 };
-
-const TENSE_PROGRESS = [
-  { id: "prasens", label: "Präsens", emoji: "🔵", mastered: 18, total: 27, color: "from-blue-500 to-cyan-400" },
-  { id: "prateritum", label: "Präteritum", emoji: "🟠", mastered: 10, total: 27, color: "from-orange-500 to-amber-400" },
-  { id: "perfekt", label: "Perfekt", emoji: "🟢", mastered: 6, total: 20, color: "from-emerald-500 to-green-400" },
-];
-
-const WEAK_SPOTS = [
-  { verb: "sprechen", tense: "Präteritum", pronoun: "du", accuracy: 40 },
-  { verb: "fahren", tense: "Präsens", pronoun: "er/sie", accuracy: 50 },
-  { verb: "lesen", tense: "Perfekt", pronoun: "ich", accuracy: 55 },
-  { verb: "sehen", tense: "Präteritum", pronoun: "ich", accuracy: 60 },
-];
 
 // ── Types ──
 interface VerbData {
@@ -87,7 +79,9 @@ function parseConjugations(): VerbData[] {
 
 // ── Dashboard View ──
 const DashboardView = ({ onStartReview, onOpenLibrary }: { onStartReview: () => void; onOpenLibrary: () => void }) => {
-  const stats = MOCK_STATS;
+  const stats = useMemo(() => getStats(), []);
+  const tenseProgress = useMemo(() => getTenseProgress(), []);
+  const weakSpots = useMemo(() => getWeakSpots(), []);
 
   return (
     <div className="space-y-6 px-4 pb-8 pt-6">
@@ -153,7 +147,7 @@ const DashboardView = ({ onStartReview, onOpenLibrary }: { onStartReview: () => 
         </div>
         <div className="flex flex-col items-center gap-1 rounded-2xl border border-border bg-card p-4">
           <Brain className="h-5 w-5 text-primary" />
-          <p className="text-xl font-extrabold text-foreground">{stats.masteredVerbs}</p>
+          <p className="text-xl font-extrabold text-foreground">{stats.masteredCards}</p>
           <p className="text-[10px] font-medium text-muted-foreground">Dominados</p>
         </div>
         <div className="flex flex-col items-center gap-1 rounded-2xl border border-border bg-card p-4">
@@ -174,14 +168,15 @@ const DashboardView = ({ onStartReview, onOpenLibrary }: { onStartReview: () => 
           <TrendingUp className="h-4 w-4 text-muted-foreground" />
         </div>
         <div className="space-y-3">
-          {TENSE_PROGRESS.map((tense) => {
-            const pct = Math.round((tense.mastered / tense.total) * 100);
+          {tenseProgress.map((tense) => {
+            const pct = tense.total > 0 ? Math.round((tense.mastered / tense.total) * 100) : 0;
+            const colors = TENSE_COLORS[tense.tense] || { emoji: "📘", color: "from-primary to-primary/70" };
             return (
-              <div key={tense.id} className="rounded-2xl border border-border bg-card p-4">
+              <div key={tense.tense} className="rounded-2xl border border-border bg-card p-4">
                 <div className="mb-2 flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <span className="text-lg">{tense.emoji}</span>
-                    <span className="text-sm font-bold text-foreground">{tense.label}</span>
+                    <span className="text-lg">{colors.emoji}</span>
+                    <span className="text-sm font-bold text-foreground">{tense.tense}</span>
                   </div>
                   <span className="text-xs font-bold text-muted-foreground">
                     {tense.mastered}/{tense.total}
@@ -192,7 +187,7 @@ const DashboardView = ({ onStartReview, onOpenLibrary }: { onStartReview: () => 
                     initial={{ width: 0 }}
                     animate={{ width: `${pct}%` }}
                     transition={{ duration: 0.8, delay: 0.3 }}
-                    className={`h-full rounded-full bg-gradient-to-r ${tense.color}`}
+                    className={`h-full rounded-full bg-gradient-to-r ${colors.color}`}
                   />
                 </div>
               </div>
@@ -212,7 +207,7 @@ const DashboardView = ({ onStartReview, onOpenLibrary }: { onStartReview: () => 
           <Trophy className="h-4 w-4 text-accent" />
         </div>
         <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
-          {WEAK_SPOTS.map((spot, i) => (
+          {weakSpots.length > 0 ? weakSpots.map((spot, i) => (
             <div
               key={i}
               className="flex min-w-[140px] flex-col gap-2 rounded-2xl border border-destructive/20 bg-destructive/5 p-4"
@@ -231,7 +226,9 @@ const DashboardView = ({ onStartReview, onOpenLibrary }: { onStartReview: () => 
                 <span className="text-[10px] font-bold text-destructive">{spot.accuracy}%</span>
               </div>
             </div>
-          ))}
+          )) : (
+            <p className="text-xs text-muted-foreground py-4">Completa algunas sesiones para ver tus puntos débiles</p>
+          )}
         </div>
       </motion.div>
 
@@ -451,6 +448,22 @@ const ConjugationsPage = () => {
   const [view, setView] = useState<PageView>("dashboard");
   const [selectedVerb, setSelectedVerb] = useState<VerbData | null>(null);
   const [filters, setFilters] = useState<ConjugationFilters>(DEFAULT_FILTERS);
+
+  // Initialize FSRS cards on mount
+  useEffect(() => {
+    const sentenceCards = MOCK_SENTENCES.map((s, i) => ({
+      id: `sent:${s.verb}:${s.tense}:${s.pronoun}:${i}`,
+      verb: s.verb,
+      tense: s.tense,
+      pronoun: s.pronoun,
+    }));
+    const tableCards = generateTableClozeCards().map((t, i) => ({
+      id: `table:${t.verb}:${t.tense}:${i}`,
+      verb: t.verb,
+      tense: t.tense,
+    }));
+    initializeCards(sentenceCards, tableCards);
+  }, []);
 
   const handleStartReview = () => {
     navigate("/conjugations/review");
