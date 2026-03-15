@@ -526,9 +526,28 @@ const ConjugationsPage = () => {
   const [view, setView] = useState<PageView>("dashboard");
   const [selectedVerb, setSelectedVerb] = useState<VerbData | null>(null);
   const [filters, setFilters] = useState<ConjugationFilters>(DEFAULT_FILTERS);
+  const [showStreak, setShowStreak] = useState(false);
+  const streakStats = useMemo(() => getStats(), []);
+
+  // Redirect to onboarding if not completed
+  useEffect(() => {
+    const onboarding = getOnboardingData();
+    if (!onboarding) {
+      navigate("/conjugations/onboarding", { replace: true });
+      return;
+    }
+    // Show streak popup once per session
+    if (streakStats.streak > 0 && !sessionStorage.getItem("streak_shown_conj")) {
+      sessionStorage.setItem("streak_shown_conj", "1");
+      setShowStreak(true);
+    }
+  }, [navigate, streakStats.streak]);
 
   // Initialize FSRS cards on mount
   useEffect(() => {
+    const onboarding = getOnboardingData();
+    if (!onboarding) return;
+
     const sentenceCards = MOCK_SENTENCES.map((s, i) => ({
       id: `sent:${s.verb}:${s.tense}:${s.pronoun}:${i}`,
       verb: s.verb,
