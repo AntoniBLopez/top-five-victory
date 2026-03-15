@@ -15,6 +15,7 @@ import ConjugationsPage from "./pages/ConjugationsPage";
 import SmartReviewPage from "./pages/SmartReviewPage";
 import OnboardingPage from "./pages/OnboardingPage";
 import AchievementsPage from "./pages/AchievementsPage";
+import AnalyticsPage from "./pages/AnalyticsPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -36,6 +37,7 @@ const App = () => (
             <Route path="/conjugations/review" element={<SmartReviewPage />} />
             <Route path="/conjugations/onboarding" element={<OnboardingPage />} />
             <Route path="/achievements" element={<AchievementsPage />} />
+            <Route path="/analytics" element={<AnalyticsPage />} />
             <Route path="/ranking" element={<RankingPage />} />
             <Route path="/games/:mode" element={<GamesPage />} />
             <Route path="*" element={<NotFound />} />
