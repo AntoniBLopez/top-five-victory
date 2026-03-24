@@ -399,7 +399,7 @@ const LandingPage = () => {
       <footer className="border-t border-border px-4 py-6 md:px-8">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 text-center md:flex-row">
           <div className="flex items-center gap-2">
-            <Brain className="h-4 w-4 text-primary" />
+            <img src={pulpoMascot} alt="VerboFlow" className="h-5 w-5 rounded object-cover" />
             <span className="text-sm font-bold text-foreground">VerboFlow</span>
             <span className="text-xs text-muted-foreground">by SpanischMitBelu</span>
           </div>
