@@ -97,16 +97,23 @@ const LandingPage = () => {
 
   return (
     <div className="min-h-[100dvh] bg-background overflow-x-hidden">
+      <AppDownloadPopup open={showDownload} onClose={handleCloseDownload} />
+
       {/* Nav */}
       <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-xl">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 md:px-8">
           <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10">
-              <Brain className="h-4 w-4 text-primary" />
-            </div>
+            <img src={pulpoMascot} alt="VerboFlow" className="h-8 w-8 rounded-xl object-cover ring-1 ring-primary/20" />
             <span className="text-base font-extrabold text-foreground md:text-lg">VerboFlow</span>
           </div>
           <div className="flex items-center gap-2 md:gap-3">
+            <button
+              onClick={() => setShowDownload(true)}
+              className="rounded-full p-2 hover:bg-muted transition-colors"
+              aria-label="Descargar app"
+            >
+              <Download className="h-5 w-5 text-foreground" />
+            </button>
             <button
               onClick={toggleTheme}
               className="rounded-full p-2 hover:bg-muted transition-colors"
