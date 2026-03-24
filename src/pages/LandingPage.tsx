@@ -1,8 +1,11 @@
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Brain, BookOpen, Target, Trophy, Zap, ArrowRight, Sun, Moon, Star, BarChart3, Flame, Shield } from "lucide-react";
+import { Brain, BookOpen, Target, Trophy, Zap, ArrowRight, Sun, Moon, Star, BarChart3, Flame, Shield, Download } from "lucide-react";
 import { useTheme } from "@/components/ThemeProvider";
 import { Button } from "@/components/ui/button";
+import AppDownloadPopup from "@/components/AppDownloadPopup";
+import pulpoMascot from "@/assets/pulpo-mascot.jpeg";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -77,19 +80,40 @@ const HOW_IT_WORKS = [
 const LandingPage = () => {
   const navigate = useNavigate();
   const { theme, toggleTheme } = useTheme();
+  const [showDownload, setShowDownload] = useState(false);
+
+  useEffect(() => {
+    const dismissed = sessionStorage.getItem("vf-download-dismissed");
+    if (!dismissed) {
+      const timer = setTimeout(() => setShowDownload(true), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, []);
+
+  const handleCloseDownload = () => {
+    setShowDownload(false);
+    sessionStorage.setItem("vf-download-dismissed", "1");
+  };
 
   return (
     <div className="min-h-[100dvh] bg-background overflow-x-hidden">
+      <AppDownloadPopup open={showDownload} onClose={handleCloseDownload} />
+
       {/* Nav */}
       <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-xl">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 md:px-8">
           <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10">
-              <Brain className="h-4 w-4 text-primary" />
-            </div>
+            <img src={pulpoMascot} alt="VerboFlow" className="h-8 w-8 rounded-xl object-cover ring-1 ring-primary/20" />
             <span className="text-base font-extrabold text-foreground md:text-lg">VerboFlow</span>
           </div>
           <div className="flex items-center gap-2 md:gap-3">
+            <button
+              onClick={() => setShowDownload(true)}
+              className="rounded-full p-2 hover:bg-muted transition-colors"
+              aria-label="Descargar app"
+            >
+              <Download className="h-5 w-5 text-foreground" />
+            </button>
             <button
               onClick={toggleTheme}
               className="rounded-full p-2 hover:bg-muted transition-colors"
@@ -375,7 +399,7 @@ const LandingPage = () => {
       <footer className="border-t border-border px-4 py-6 md:px-8">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 text-center md:flex-row">
           <div className="flex items-center gap-2">
-            <Brain className="h-4 w-4 text-primary" />
+            <img src={pulpoMascot} alt="VerboFlow" className="h-5 w-5 rounded object-cover" />
             <span className="text-sm font-bold text-foreground">VerboFlow</span>
             <span className="text-xs text-muted-foreground">by SpanischMitBelu</span>
           </div>
