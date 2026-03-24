@@ -1,8 +1,11 @@
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Brain, BookOpen, Target, Trophy, Zap, ArrowRight, Sun, Moon, Star, BarChart3, Flame, Shield } from "lucide-react";
+import { Brain, BookOpen, Target, Trophy, Zap, ArrowRight, Sun, Moon, Star, BarChart3, Flame, Shield, Download } from "lucide-react";
 import { useTheme } from "@/components/ThemeProvider";
 import { Button } from "@/components/ui/button";
+import AppDownloadPopup from "@/components/AppDownloadPopup";
+import pulpoMascot from "@/assets/pulpo-mascot.jpeg";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
