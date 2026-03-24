@@ -80,6 +80,20 @@ const HOW_IT_WORKS = [
 const LandingPage = () => {
   const navigate = useNavigate();
   const { theme, toggleTheme } = useTheme();
+  const [showDownload, setShowDownload] = useState(false);
+
+  useEffect(() => {
+    const dismissed = sessionStorage.getItem("vf-download-dismissed");
+    if (!dismissed) {
+      const timer = setTimeout(() => setShowDownload(true), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, []);
+
+  const handleCloseDownload = () => {
+    setShowDownload(false);
+    sessionStorage.setItem("vf-download-dismissed", "1");
+  };
 
   return (
     <div className="min-h-[100dvh] bg-background overflow-x-hidden">
