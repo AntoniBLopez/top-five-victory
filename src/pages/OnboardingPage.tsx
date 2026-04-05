@@ -268,19 +268,19 @@ const CalibrationStep = ({
       {/* Back + Progress */}
       <div className="mb-6">
         <div className="mb-2 flex items-center justify-between">
-          {currentIndex === 0 && !showFeedback ? (
-            <button
-              onClick={onBack}
-              className="flex items-center gap-1 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground"
-            >
-              <ArrowLeft className="h-3.5 w-3.5" />
-              Atrás
-            </button>
-          ) : (
+          <div className="flex items-center gap-3">
+            {currentIndex === 0 && !showFeedback && (
+              <button
+                onClick={onBack}
+                className="flex items-center gap-0.5 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground"
+              >
+                <ArrowLeft className="h-3.5 w-3.5" />
+              </button>
+            )}
             <span className="text-xs font-bold text-muted-foreground">
               {currentIndex + 1} / {totalCards}
             </span>
-          )}
+          </div>
           <span className="text-xs font-bold text-primary">Test de calibración</span>
         </div>
         <Progress value={progress} className="h-2" />
