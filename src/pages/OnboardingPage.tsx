@@ -383,6 +383,16 @@ const CalibrationStep = ({
               </Button>
             )}
           </div>
+
+          {/* Skip calibration */}
+          {!showFeedback && (
+            <button
+              onClick={onSkipAll}
+              className="mx-auto mt-4 block text-xs text-muted-foreground/70 underline-offset-2 transition-colors hover:text-muted-foreground hover:underline"
+            >
+              Omitir test de calibración
+            </button>
+          )}
         </motion.div>
       </AnimatePresence>
     </motion.div>
