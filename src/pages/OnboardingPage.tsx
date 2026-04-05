@@ -627,6 +627,7 @@ const OnboardingPage = () => {
               onAnswer={handleAnswer}
               onChange={setUserAnswer}
               onSkip={handleSkip}
+              onBack={() => setStep("goals")}
               totalCards={calibrationDeck.length}
             />
           )}
