@@ -12,16 +12,32 @@ export type SelfAssessmentId =
 export interface SelfAssessmentOption {
   id: SelfAssessmentId;
   label: string;
-  emoji: string;
+  level: number; // 1-5 for bar icon
   desc: string;
 }
 
+const BarIcon = ({ level, active }: { level: number; active: boolean }) => (
+  <div className="flex items-end gap-[3px] h-6 w-7">
+    {[1, 2, 3, 4, 5].map((i) => (
+      <div
+        key={i}
+        className={`w-[3px] rounded-sm transition-colors ${
+          i <= level
+            ? active ? "bg-primary" : "bg-primary/70"
+            : "bg-muted-foreground/20"
+        }`}
+        style={{ height: `${20 + (i - 1) * 15}%` }}
+      />
+    ))}
+  </div>
+);
+
 export const SELF_ASSESSMENT_OPTIONS: SelfAssessmentOption[] = [
-  { id: "new_to_language", label: "Soy nuevo en español", emoji: "🌱", desc: "No tengo conocimientos previos" },
-  { id: "some_common_words", label: "Conozco algunas palabras comunes", emoji: "📝", desc: "Sé palabras básicas como hola, gracias..." },
-  { id: "basic_conversations", label: "Puedo tener conversaciones básicas", emoji: "💬", desc: "Me presento y hago preguntas simples" },
-  { id: "various_topics", label: "Puedo hablar de varios temas", emoji: "🗣️", desc: "Mantengo conversaciones cotidianas" },
-  { id: "detailed_discussions", label: "Puedo hablar en detalle", emoji: "🎓", desc: "Discuto casi cualquier tema con fluidez" },
+  { id: "new_to_language", label: "Soy nuevo en español", level: 1, desc: "No tengo conocimientos previos" },
+  { id: "some_common_words", label: "Conozco algunas palabras comunes", level: 2, desc: "Sé palabras básicas como hola, gracias..." },
+  { id: "basic_conversations", label: "Puedo tener conversaciones básicas", level: 3, desc: "Me presento y hago preguntas simples" },
+  { id: "various_topics", label: "Puedo hablar de varios temas", level: 4, desc: "Mantengo conversaciones cotidianas" },
+  { id: "detailed_discussions", label: "Puedo hablar en detalle", level: 5, desc: "Discuto casi cualquier tema con fluidez" },
 ];
 
 interface SelfAssessmentStepProps {
@@ -61,7 +77,7 @@ const SelfAssessmentStep = ({ selected, onSelect, onNext, onBack }: SelfAssessme
                 : "border-border bg-card hover:border-primary/30"
             }`}
           >
-            <span className="text-2xl">{opt.emoji}</span>
+            <BarIcon level={opt.level} active={isSelected} />
             <div className="flex-1 text-left">
               <p className="text-sm font-extrabold text-foreground">{opt.label}</p>
               <p className="text-xs text-muted-foreground">{opt.desc}</p>
