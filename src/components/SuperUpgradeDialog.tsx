@@ -106,7 +106,7 @@ const SuperUpgradeDialog = ({ open, onClose }: SuperUpgradeDialogProps) => {
   return (
     <Dialog open={open} onOpenChange={(v) => { if (!v) handleClose(); }}>
       <DialogContent className="fixed inset-0 max-w-none w-full h-full translate-x-0 translate-y-0 left-0 top-0 rounded-none border-none p-0 sm:rounded-none data-[state=open]:slide-in-from-bottom-4 data-[state=closed]:slide-out-to-bottom-4 data-[state=open]:slide-in-from-left-0 data-[state=closed]:slide-out-to-left-0 data-[state=open]:slide-in-from-top-0 data-[state=closed]:slide-out-to-top-0 overflow-auto">
-        <div className="min-h-full w-full bg-gradient-to-b from-[hsl(210,60%,25%)] via-[hsl(240,40%,30%)] to-[hsl(270,40%,28%)] flex flex-col items-center justify-center px-4 py-12 relative">
+        <div className="min-h-full w-full bg-gradient-to-b from-[hsl(210,50%,14%)] via-[hsl(195,45%,18%)] to-[hsl(162,50%,20%)] flex flex-col items-center justify-center px-4 py-12 relative">
           
           {/* Close button */}
           <button
