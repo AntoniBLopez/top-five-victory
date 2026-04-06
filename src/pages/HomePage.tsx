@@ -96,6 +96,7 @@ const HomePage = () => {
       </div>
 
       <BottomNav />
+      <SuperUpgradeDialog open={showSuper} onClose={() => setShowSuper(false)} />
     </div>
   );
 };
