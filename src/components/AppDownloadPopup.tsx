@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Download, Smartphone, Apple, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import pulpoMascot from "@/assets/pulpo-mascot.jpeg";
+import pulpoMascot from "@/assets/logo.png";
 
 // Placeholder store URLs — replace with real ones
 const IOS_STORE_URL = "https://apps.apple.com/app/verboflow/id0000000000";

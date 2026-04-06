@@ -5,7 +5,7 @@ import { Brain, BookOpen, Target, Trophy, Zap, ArrowRight, Sun, Moon, Star, BarC
 import { useTheme } from "@/components/ThemeProvider";
 import { Button } from "@/components/ui/button";
 import AppDownloadPopup from "@/components/AppDownloadPopup";
-import pulpoMascot from "@/assets/pulpo-mascot.jpeg";
+import pulpoMascot from "@/assets/logo.png";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
