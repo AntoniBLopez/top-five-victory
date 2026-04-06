@@ -166,9 +166,7 @@ const SuperUpgradeDialog = ({ open, onClose }: SuperUpgradeDialogProps) => {
                 Comenzar mi prueba gratis de 7 días
               </button>
 
-              <p className="mt-4 text-xs text-white/50 text-center max-w-sm">
-                Cancela en cualquier momento. Sin compromisos.
-              </p>
+
             </>
           )}
         </div>
