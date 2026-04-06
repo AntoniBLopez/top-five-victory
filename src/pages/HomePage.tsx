@@ -1,8 +1,9 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { BookOpen, PenLine, Sun, Moon, Flame, Gamepad2 } from "lucide-react";
+import { BookOpen, PenLine, Sun, Moon, Flame, Gamepad2, Crown } from "lucide-react";
 import { useTheme } from "@/components/ThemeProvider";
 import BottomNav from "@/components/BottomNav";
-
+import SuperUpgradeDialog from "@/components/SuperUpgradeDialog";
 const MOCK_STREAK = 7;
 
 const MODES = [
@@ -27,6 +28,7 @@ const MODES = [
 const HomePage = () => {
   const navigate = useNavigate();
   const { theme, toggleTheme } = useTheme();
+  const [showSuper, setShowSuper] = useState(false);
 
   return (
     <div className="min-h-[100dvh] bg-background pb-20">
@@ -38,6 +40,13 @@ const HomePage = () => {
             <span className="text-base font-bold text-foreground md:text-lg">SpanischMitBelu</span>
           </div>
           <div className="flex items-center gap-2">
+            <button
+              onClick={() => setShowSuper(true)}
+              className="flex items-center gap-1 rounded-lg bg-gradient-to-r from-primary to-accent px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wider text-white shadow-md transition-all hover:scale-105 hover:shadow-lg active:scale-95"
+            >
+              <Crown className="h-3.5 w-3.5" />
+              Super
+            </button>
             <div className="flex items-center gap-1 rounded-full bg-accent/15 px-2.5 py-1">
               <Flame className="h-4 w-4 text-accent" />
               <span className="text-xs font-bold text-accent-foreground">{MOCK_STREAK}</span>
@@ -87,6 +96,7 @@ const HomePage = () => {
       </div>
 
       <BottomNav />
+      <SuperUpgradeDialog open={showSuper} onClose={() => setShowSuper(false)} />
     </div>
   );
 };
