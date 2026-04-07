@@ -274,15 +274,27 @@ const OnboardingPage = () => {
     <div className="flex min-h-[100dvh] flex-col bg-background">
       {/* Step indicators */}
       {step !== "welcome" && (
-        <div className="flex justify-center gap-2 px-6 pt-6 pb-2">
-          {ALL_STEPS.map((s, i) => (
-            <div
-              key={s}
-              className={`h-1.5 flex-1 rounded-full transition-all ${
-                i <= stepIndex ? "bg-primary" : "bg-muted"
-              }`}
-            />
-          ))}
+        <div className="flex items-center gap-3 px-6 pt-6 pb-2">
+          <button
+            onClick={() => {
+              const prevIndex = stepIndex - 1;
+              if (prevIndex >= 0) setStep(ALL_STEPS[prevIndex]);
+            }}
+            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+            aria-label="Volver al paso anterior"
+          >
+            <ArrowLeft className="h-4 w-4" />
+          </button>
+          <div className="flex flex-1 gap-2">
+            {ALL_STEPS.map((s, i) => (
+              <div
+                key={s}
+                className={`h-1.5 flex-1 rounded-full transition-all ${
+                  i <= stepIndex ? "bg-primary" : "bg-muted"
+                }`}
+              />
+            ))}
+          </div>
         </div>
       )}
 
