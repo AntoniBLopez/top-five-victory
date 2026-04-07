@@ -336,15 +336,22 @@ const OnboardingPage = () => {
               key="self-assessment"
               selected={state.selfAssessment}
               onSelect={(id) => setState((p) => ({ ...p, selfAssessment: id }))}
-              onNext={() => goTo("promises")}
+              onNext={() => goTo("memory-science")}
               onBack={() => setStep("motivation")}
+            />
+          )}
+          {step === "memory-science" && (
+            <MemoryScienceStep
+              key="memory-science"
+              onNext={() => goTo("promises")}
+              onBack={() => setStep("self-assessment")}
             />
           )}
           {step === "promises" && (
             <PromisesStep
               key="promises"
               onNext={() => goTo("daily-goal")}
-              onBack={() => setStep("self-assessment")}
+              onBack={() => setStep("memory-science")}
             />
           )}
           {step === "daily-goal" && (
