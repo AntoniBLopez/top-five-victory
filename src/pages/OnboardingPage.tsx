@@ -8,6 +8,7 @@ import { WordsArray } from "@/types/game";
 import WelcomeStep from "@/components/onboarding/WelcomeStep";
 import MotivationStep, { type MotivationId } from "@/components/onboarding/MotivationStep";
 import SelfAssessmentStep, { type SelfAssessmentId } from "@/components/onboarding/SelfAssessmentStep";
+import MemoryScienceStep from "@/components/onboarding/MemoryScienceStep";
 import PromisesStep from "@/components/onboarding/PromisesStep";
 import DailyGoalStep from "@/components/onboarding/DailyGoalStep";
 import NotificationsStep from "@/components/onboarding/NotificationsStep";
