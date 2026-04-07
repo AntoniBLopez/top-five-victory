@@ -36,8 +36,9 @@ const MemoryRetentionStep = ({ onNext, onBack }: MemoryRetentionStepProps) => (
   >
     {/* Header */}
     <div className="mb-6 text-center">
-      <h2 className="text-xl font-extrabold text-foreground leading-tight">¿Qué nos diferencia?</h2>
-      <p className="mt-1 text-lg font-bold text-primary">Memoria que perdura a largo plazo</p>
+      <h2 className="text-xl font-extrabold text-foreground leading-tight">
+        Vokabeltrainer crea memoria que perdura a largo plazo
+      </h2>
       <p className="mt-2 text-sm text-muted-foreground">
         No es memorización bruta. Es ciencia aplicada a tu aprendizaje.
       </p>
