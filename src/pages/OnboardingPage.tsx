@@ -8,6 +8,7 @@ import { WordsArray } from "@/types/game";
 import WelcomeStep from "@/components/onboarding/WelcomeStep";
 import MotivationStep, { type MotivationId } from "@/components/onboarding/MotivationStep";
 import SelfAssessmentStep, { type SelfAssessmentId } from "@/components/onboarding/SelfAssessmentStep";
+import MemoryScienceStep from "@/components/onboarding/MemoryScienceStep";
 import PromisesStep from "@/components/onboarding/PromisesStep";
 import DailyGoalStep from "@/components/onboarding/DailyGoalStep";
 import NotificationsStep from "@/components/onboarding/NotificationsStep";
@@ -32,6 +33,7 @@ type Step =
   | "welcome"
   | "motivation"
   | "self-assessment"
+  | "memory-science"
   | "promises"
   | "daily-goal"
   | "notifications"
@@ -42,6 +44,7 @@ const ALL_STEPS: Step[] = [
   "welcome",
   "motivation",
   "self-assessment",
+  "memory-science",
   "promises",
   "daily-goal",
   "notifications",
@@ -333,15 +336,22 @@ const OnboardingPage = () => {
               key="self-assessment"
               selected={state.selfAssessment}
               onSelect={(id) => setState((p) => ({ ...p, selfAssessment: id }))}
-              onNext={() => goTo("promises")}
+              onNext={() => goTo("memory-science")}
               onBack={() => setStep("motivation")}
+            />
+          )}
+          {step === "memory-science" && (
+            <MemoryScienceStep
+              key="memory-science"
+              onNext={() => goTo("promises")}
+              onBack={() => setStep("self-assessment")}
             />
           )}
           {step === "promises" && (
             <PromisesStep
               key="promises"
               onNext={() => goTo("daily-goal")}
-              onBack={() => setStep("self-assessment")}
+              onBack={() => setStep("memory-science")}
             />
           )}
           {step === "daily-goal" && (
