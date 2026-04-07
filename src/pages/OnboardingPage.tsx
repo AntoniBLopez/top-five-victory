@@ -44,6 +44,7 @@ const ALL_STEPS: Step[] = [
   "welcome",
   "motivation",
   "self-assessment",
+  "memory-science",
   "promises",
   "daily-goal",
   "notifications",
