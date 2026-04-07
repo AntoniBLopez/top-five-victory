@@ -105,6 +105,8 @@ const OnboardingPage = () => {
   const [userAnswer, setUserAnswer] = useState("");
   const [showFeedback, setShowFeedback] = useState(false);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
+  const feedbackTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const isAdvancingRef = useRef(false);
 
   // Track onboarding start
   useState(() => {
@@ -115,67 +117,78 @@ const OnboardingPage = () => {
 
   // ── Calibration handlers ──
   const advanceCard = useCallback(() => {
-    if (cardIndex + 1 >= calibrationDeck.length) {
-      const results = [...state.calibrationResults];
-      const correctCount = results.filter((r) => r.correct).length;
-      const pct = results.length > 0 ? (correctCount / results.length) * 100 : 0;
-      const level = pct >= 70 ? "advanced" : pct >= 40 ? "intermediate" : "beginner";
+    if (isAdvancingRef.current) return;
+    isAdvancingRef.current = true;
 
-      // Compute weak tenses/pronouns
-      const tenseMap: Record<string, { correct: number; total: number }> = {};
-      const pronounMap: Record<string, { correct: number; total: number }> = {};
-      for (const r of results) {
-        const t = r.card.tense;
-        const p = r.card.pronoun;
-        if (!tenseMap[t]) tenseMap[t] = { correct: 0, total: 0 };
-        if (!pronounMap[p]) pronounMap[p] = { correct: 0, total: 0 };
-        tenseMap[t].total++;
-        pronounMap[p].total++;
-        if (r.correct) {
-          tenseMap[t].correct++;
-          pronounMap[p].correct++;
-        }
-      }
-      const weakTenses = Object.entries(tenseMap)
-        .filter(([, d]) => d.total > 0 && d.correct / d.total < 0.5)
-        .map(([t]) => t);
-      const weakPronouns = Object.entries(pronounMap)
-        .filter(([, d]) => d.total > 0 && d.correct / d.total < 0.5)
-        .map(([p]) => p);
-
-      setState((prev) => ({
-        ...prev,
-        level,
-        calibrationMode: "completed",
-      }));
-
-      // Persist calibration data
-      const existing = JSON.parse(localStorage.getItem("onboarding") || "{}");
-      localStorage.setItem(
-        "onboarding",
-        JSON.stringify({
-          ...existing,
-          smartReview: {
-            calibration: {
-              mode: "completed",
-              weakTenses,
-              weakPronouns,
-              level,
-              completedAt: new Date().toISOString(),
-            },
-          },
-        })
-      );
-
-      trackEvent("smart_review_step_completed", { step: "calibration", mode: "completed" });
-      setStep("results");
-    } else {
-      setCardIndex((i) => i + 1);
-      setUserAnswer("");
-      setShowFeedback(false);
-      setIsCorrect(null);
+    // Clear any pending timeout
+    if (feedbackTimerRef.current) {
+      clearTimeout(feedbackTimerRef.current);
+      feedbackTimerRef.current = null;
     }
-  }, [cardIndex, calibrationDeck.length, state.calibrationResults]);
+
+    setCardIndex((prevIndex) => {
+      if (prevIndex + 1 >= calibrationDeck.length) {
+        // Final card — compute results from latest state
+        setState((prev) => {
+          const results = prev.calibrationResults;
+          const correctCount = results.filter((r) => r.correct).length;
+          const pct = results.length > 0 ? (correctCount / results.length) * 100 : 0;
+          const level = pct >= 70 ? "advanced" : pct >= 40 ? "intermediate" : "beginner";
+
+          const tenseMap: Record<string, { correct: number; total: number }> = {};
+          const pronounMap: Record<string, { correct: number; total: number }> = {};
+          for (const r of results) {
+            const t = r.card.tense;
+            const p = r.card.pronoun;
+            if (!tenseMap[t]) tenseMap[t] = { correct: 0, total: 0 };
+            if (!pronounMap[p]) pronounMap[p] = { correct: 0, total: 0 };
+            tenseMap[t].total++;
+            pronounMap[p].total++;
+            if (r.correct) {
+              tenseMap[t].correct++;
+              pronounMap[p].correct++;
+            }
+          }
+          const weakTenses = Object.entries(tenseMap)
+            .filter(([, d]) => d.total > 0 && d.correct / d.total < 0.5)
+            .map(([t]) => t);
+          const weakPronouns = Object.entries(pronounMap)
+            .filter(([, d]) => d.total > 0 && d.correct / d.total < 0.5)
+            .map(([p]) => p);
+
+          const existing = JSON.parse(localStorage.getItem("onboarding") || "{}");
+          localStorage.setItem(
+            "onboarding",
+            JSON.stringify({
+              ...existing,
+              smartReview: {
+                calibration: {
+                  mode: "completed",
+                  weakTenses,
+                  weakPronouns,
+                  level,
+                  completedAt: new Date().toISOString(),
+                },
+              },
+            })
+          );
+
+          trackEvent("smart_review_step_completed", { step: "calibration", mode: "completed" });
+          setTimeout(() => setStep("results"), 0);
+
+          return { ...prev, level, calibrationMode: "completed" as CalibrationMode };
+        });
+
+        return prevIndex; // don't increment past end
+      } else {
+        setUserAnswer("");
+        setShowFeedback(false);
+        setIsCorrect(null);
+        isAdvancingRef.current = false;
+        return prevIndex + 1;
+      }
+    });
+  }, [calibrationDeck.length]);
 
   const handleAnswer = useCallback(() => {
     if (showFeedback) return;
@@ -189,7 +202,8 @@ const OnboardingPage = () => {
       calibrationResults: [...prev.calibrationResults, { correct, card }],
     }));
 
-    setTimeout(() => advanceCard(), 1500);
+    isAdvancingRef.current = false;
+    feedbackTimerRef.current = setTimeout(() => advanceCard(), 1500);
   }, [userAnswer, cardIndex, calibrationDeck, showFeedback, advanceCard]);
 
   const handleSkip = useCallback(() => {
@@ -204,7 +218,8 @@ const OnboardingPage = () => {
     }));
     setIsCorrect(false);
     setShowFeedback(true);
-    setTimeout(() => advanceCard(), 1200);
+    isAdvancingRef.current = false;
+    feedbackTimerRef.current = setTimeout(() => advanceCard(), 1200);
   }, [showFeedback, cardIndex, calibrationDeck, advanceCard]);
 
   const handleSkipCalibration = useCallback(() => {
