@@ -137,8 +137,15 @@ const AuthPage = () => {
 
             {/* Last login indicator */}
             {lastMethod && isLogin && (
-              <p className="text-center text-xs text-muted-foreground mb-6 flex items-center justify-center gap-1.5">
-                <span className="inline-block w-2 h-2 rounded-full bg-primary/60" />
+              <p className="text-center text-xs text-muted-foreground mb-6 flex items-center justify-center gap-2">
+                <span className="relative inline-flex items-center justify-center w-5 h-5">
+                  {/* Mini glow corners */}
+                  <span className="absolute -top-0.5 -left-0.5 w-2.5 h-2.5" style={{ background: "radial-gradient(circle, hsl(var(--primary) / 0.6) 0%, transparent 70%)", filter: "blur(2px)" }} />
+                  <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5" style={{ background: "radial-gradient(circle, hsl(var(--primary) / 0.6) 0%, transparent 70%)", filter: "blur(2px)" }} />
+                  <span className="absolute -bottom-0.5 -left-0.5 w-2.5 h-2.5" style={{ background: "radial-gradient(circle, hsl(var(--primary) / 0.6) 0%, transparent 70%)", filter: "blur(2px)" }} />
+                  <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5" style={{ background: "radial-gradient(circle, hsl(var(--primary) / 0.6) 0%, transparent 70%)", filter: "blur(2px)" }} />
+                  <span className="relative inline-block w-2 h-2 rounded-full bg-primary/70" />
+                </span>
                 You last logged in with {LOGIN_METHOD_LABELS[lastMethod]}
               </p>
             )}
