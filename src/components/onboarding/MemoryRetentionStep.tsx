@@ -36,10 +36,9 @@ const MemoryRetentionStep = ({ onNext, onBack }: MemoryRetentionStepProps) => (
   >
     {/* Header */}
     <div className="mb-6 text-center">
+      <p className="text-sm font-semibold text-muted-foreground mb-1">¿Qué nos diferencia?</p>
       <h2 className="text-xl font-extrabold text-foreground leading-tight">
-        Smart Review crea memoria
-        <br />
-        <span className="text-primary">que perdura</span>
+        Memoria que perdura
       </h2>
       <p className="mt-2 text-sm text-muted-foreground">
         No es memorización bruta. Es ciencia aplicada a tu aprendizaje.
