@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { motion } from "framer-motion";
-import { Sparkles, Flame, AlertTriangle } from "lucide-react";
+import { Sparkles, Flame, AlertTriangle, Lightbulb } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { CalibrationCard } from "./CalibrationStep";
 
