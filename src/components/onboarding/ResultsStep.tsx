@@ -190,26 +190,12 @@ const ResultsStep = ({ results, level, dailyGoal, calibrationMode, onFinish }: R
         </>
       )}
 
-      <div className="mb-8 rounded-2xl border border-border bg-card p-4">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent/10">
-            <Flame className="h-5 w-5 text-accent" />
-          </div>
-          <div>
-            <p className="text-sm font-bold text-foreground">Objetivo: {dailyGoal} cards/día</p>
-            <p className="text-xs text-muted-foreground">
-              Tu repaso se adaptará a tu nivel automáticamente
-            </p>
-          </div>
-        </div>
-      </div>
-
       {weakPoints && (
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6 }}
-          className="mb-8 rounded-2xl border border-border bg-card p-4"
+          className="mb-6 rounded-2xl border border-border bg-card p-4"
         >
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
@@ -229,6 +215,20 @@ const ResultsStep = ({ results, level, dailyGoal, calibrationMode, onFinish }: R
           </div>
         </motion.div>
       )}
+
+      <div className="mb-8 rounded-2xl border border-border bg-card p-4">
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent/10">
+            <Flame className="h-5 w-5 text-accent" />
+          </div>
+          <div>
+            <p className="text-sm font-bold text-foreground">Objetivo: {dailyGoal} cards/día</p>
+            <p className="text-xs text-muted-foreground">
+              Tu repaso se adaptará a tu nivel automáticamente
+            </p>
+          </div>
+        </div>
+      </div>
 
       <Button
         onClick={onFinish}
