@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, ArrowLeft, Bell, BellOff } from "lucide-react";
+import { ArrowLeft, Bell, Mail, Smartphone } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface NotificationsStepProps {
   onNext: (permission: string) => void;
@@ -11,20 +12,26 @@ interface NotificationsStepProps {
 
 const NotificationsStep = ({ onNext, onBack, onSkip }: NotificationsStepProps) => {
   const [requesting, setRequesting] = useState(false);
+  const [emailOptIn, setEmailOptIn] = useState(true);
+
+  const savePreferences = (browserPermission: string) => {
+    localStorage.setItem("smart_review_notification_permission", browserPermission);
+    localStorage.setItem("smart_review_email_reminders", emailOptIn ? "enabled" : "disabled");
+  };
 
   const handleEnable = async () => {
     setRequesting(true);
     try {
       if ("Notification" in window) {
         const result = await Notification.requestPermission();
-        localStorage.setItem("smart_review_notification_permission", result);
+        savePreferences(result);
         onNext(result);
       } else {
-        localStorage.setItem("smart_review_notification_permission", "error");
+        savePreferences("error");
         onNext("error");
       }
     } catch {
-      localStorage.setItem("smart_review_notification_permission", "error");
+      savePreferences("error");
       onNext("error");
     } finally {
       setRequesting(false);
@@ -32,7 +39,7 @@ const NotificationsStep = ({ onNext, onBack, onSkip }: NotificationsStepProps) =
   };
 
   const handleDecline = () => {
-    localStorage.setItem("smart_review_notification_permission", "declined");
+    savePreferences("declined");
     onSkip();
   };
 
@@ -56,7 +63,7 @@ const NotificationsStep = ({ onNext, onBack, onSkip }: NotificationsStepProps) =
 
         <h2 className="text-xl font-extrabold text-foreground">¿Activar recordatorios?</h2>
         <p className="mt-2 max-w-sm text-sm text-muted-foreground leading-relaxed">
-          Te enviaremos un recordatorio diario para que no pierdas tu racha de aprendizaje.
+          El sistema de repaso espaciado funciona mejor con práctica diaria. Te avisaremos para que no pierdas tu racha.
         </p>
 
         <motion.div
@@ -69,7 +76,7 @@ const NotificationsStep = ({ onNext, onBack, onSkip }: NotificationsStepProps) =
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10">
               <Bell className="h-4 w-4 text-primary" />
             </div>
-            <span className="text-sm font-medium text-foreground">Recordatorio de repaso diario</span>
+            <span className="text-sm font-medium text-foreground">Notificaciones en el navegador</span>
           </div>
           <div className="flex items-center gap-3 rounded-2xl border border-border bg-card p-4">
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-accent/10">
@@ -77,6 +84,39 @@ const NotificationsStep = ({ onNext, onBack, onSkip }: NotificationsStepProps) =
             </div>
             <span className="text-sm font-medium text-foreground">Alertas para mantener tu racha</span>
           </div>
+
+          {/* Email opt-in */}
+          <label
+            className="flex items-start gap-3 rounded-2xl border border-border bg-card p-4 cursor-pointer select-none text-left"
+          >
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/10">
+              <Mail className="h-4 w-4 text-primary" />
+            </div>
+            <div className="flex-1">
+              <span className="text-sm font-medium text-foreground">Recordatorio diario por email</span>
+              <p className="mt-0.5 text-xs text-muted-foreground leading-snug">
+                Recibe un email cuando tengas tarjetas pendientes de repaso
+              </p>
+            </div>
+            <Checkbox
+              checked={emailOptIn}
+              onCheckedChange={(v) => setEmailOptIn(v === true)}
+              className="mt-2.5"
+            />
+          </label>
+        </motion.div>
+
+        {/* Upcoming mobile app teaser */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5 }}
+          className="mt-5 flex items-center gap-2 rounded-xl bg-muted/50 px-4 py-2.5 max-w-xs"
+        >
+          <Smartphone className="h-4 w-4 shrink-0 text-muted-foreground" />
+          <p className="text-xs text-muted-foreground leading-snug text-left">
+            <span className="font-semibold text-foreground">Próximamente:</span> app móvil con notificaciones push directas, sin necesidad de email.
+          </p>
         </motion.div>
       </div>
 
