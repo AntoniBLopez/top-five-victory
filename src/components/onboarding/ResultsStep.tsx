@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { motion } from "framer-motion";
-import { Sparkles, Flame, AlertTriangle, Lightbulb } from "lucide-react";
+import { Sparkles, Flame, AlertTriangle, Lightbulb, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { CalibrationCard } from "./CalibrationStep";
 
@@ -79,14 +79,18 @@ const ResultsStep = ({ results, level, dailyGoal, calibrationMode, onFinish }: R
           transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
           className="mb-4 flex h-24 w-24 items-center justify-center rounded-3xl bg-primary/10"
         >
-          <span className="text-5xl">{levelEmoji}</span>
+          {calibrationMode === "skipped" ? (
+            <Zap className="h-12 w-12 text-amber-500" />
+          ) : (
+            <span className="text-5xl">{levelEmoji}</span>
+          )}
         </motion.div>
 
         {calibrationMode === "skipped" ? (
           <>
-            <h2 className="text-2xl font-extrabold text-foreground">¡Todo listo!</h2>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Empezarás desde el nivel principiante. El sistema se adaptará a ti.
+            <h2 className="text-2xl font-extrabold text-foreground">Configuración rápida lista</h2>
+            <p className="mt-1 text-sm text-muted-foreground text-center">
+              Empezaremos con una mezcla equilibrada y ajustaremos automáticamente según tu rendimiento.
             </p>
           </>
         ) : (
@@ -229,6 +233,20 @@ const ResultsStep = ({ results, level, dailyGoal, calibrationMode, onFinish }: R
           </div>
         </div>
       </div>
+
+      {calibrationMode === "skipped" && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          className="mb-8 rounded-2xl border border-primary/30 bg-card p-5"
+        >
+          <p className="text-sm font-extrabold text-foreground mb-1">Personalización progresiva</p>
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            En las primeras sesiones detectaremos tus tiempos y pronombres más débiles para personalizar la cola.
+          </p>
+        </motion.div>
+      )}
 
       <Button
         onClick={onFinish}
