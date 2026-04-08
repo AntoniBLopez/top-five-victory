@@ -176,3 +176,5 @@ const CalibrationStep = forwardRef<HTMLDivElement, CalibrationStepProps>(({
 });
 
 CalibrationStep.displayName = "CalibrationStep";
+
+export default CalibrationStep;
