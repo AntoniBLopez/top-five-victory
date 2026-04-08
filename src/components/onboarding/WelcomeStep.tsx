@@ -42,7 +42,7 @@ const WelcomeStep = ({ onNext }: WelcomeStepProps) => (
       transition={{ delay: 0.4 }}
       className="mt-4 max-w-sm text-base text-muted-foreground leading-relaxed"
     >
-      Vamos a personalizar tu experiencia de aprendizaje en unos pocos pasos.
+      Vamos a calibrar tu nivel con un test rápido y configurar tus objetivos diarios para maximizar tu aprendizaje.
     </motion.p>
 
     <motion.div
@@ -52,9 +52,9 @@ const WelcomeStep = ({ onNext }: WelcomeStepProps) => (
       className="mt-8 w-full max-w-xs space-y-3"
     >
       {[
-        { icon: Target, text: "Personalización inteligente" },
-        { icon: Clock, text: "Configura tus objetivos" },
-        { icon: Brain, text: "Repaso adaptado a tu nivel" },
+        { icon: Target, text: "Configura tus objetivos" },
+        { icon: Clock, text: "Test de calibración (~3 min)" },
+        { icon: Brain, text: "Acceso a la app" },
       ].map((item, i) => (
         <div
           key={i}
