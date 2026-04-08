@@ -131,11 +131,11 @@ const CalibrationStep = forwardRef<HTMLDivElement, CalibrationStepProps>(({
                       <span className="text-sm font-bold">¡Correcto!</span>
                     </div>
                   ) : (
-                    <div className="space-y-1">
-                      <p className="text-sm text-muted-foreground">
-                        Respuesta correcta:{" "}
-                        <span className="font-extrabold text-foreground">{card.answer}</span>
-                      </p>
+                    <div className="space-y-2">
+                      <p className="text-sm text-muted-foreground">Respuesta correcta:</p>
+                      <span className="inline-block rounded-xl bg-primary/15 px-4 py-1.5 text-base font-extrabold text-primary border border-primary/20">
+                        {card.answer}
+                      </span>
                     </div>
                   )}
                 </motion.div>
