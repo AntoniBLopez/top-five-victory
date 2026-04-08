@@ -29,6 +29,39 @@ const ResultsStep = ({ results, level, dailyGoal, calibrationMode, onFinish }: R
     return Object.entries(map);
   }, [results, calibrationMode]);
 
+  const weakPoints = useMemo(() => {
+    if (calibrationMode === "skipped" || total === 0) return null;
+
+    // Find weak tenses (< 50% accuracy)
+    const tenseMap: Record<string, { correct: number; total: number }> = {};
+    const pronounMap: Record<string, { correct: number; total: number }> = {};
+
+    for (const r of results) {
+      const t = r.card.tense;
+      const p = r.card.pronoun;
+      if (!tenseMap[t]) tenseMap[t] = { correct: 0, total: 0 };
+      if (!pronounMap[p]) pronounMap[p] = { correct: 0, total: 0 };
+      tenseMap[t].total++;
+      pronounMap[p].total++;
+      if (r.correct) {
+        tenseMap[t].correct++;
+        pronounMap[p].correct++;
+      }
+    }
+
+    const weakTenses = Object.entries(tenseMap)
+      .filter(([, d]) => d.total > 0 && d.correct / d.total < 0.5)
+      .map(([name]) => name);
+
+    const weakPronouns = Object.entries(pronounMap)
+      .filter(([, d]) => d.total > 0 && d.correct / d.total < 0.5)
+      .map(([name]) => name);
+
+    if (weakTenses.length === 0 && weakPronouns.length === 0) return null;
+
+    return { weakTenses, weakPronouns };
+  }, [results, calibrationMode, total]);
+
   const levelEmoji = level === "advanced" ? "🏆" : level === "intermediate" ? "📈" : "🌱";
   const levelLabel = level === "advanced" ? "Avanzado" : level === "intermediate" ? "Intermedio" : "Principiante";
 
