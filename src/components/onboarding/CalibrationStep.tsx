@@ -144,21 +144,30 @@ const CalibrationStep = forwardRef<HTMLDivElement, CalibrationStepProps>(({
           </div>
 
           <div className="flex gap-3">
-            <Button
-              variant="outline"
-              onClick={onSkip}
-              className="h-12 flex-1 rounded-2xl font-bold text-sm"
-            >
-              {showFeedback ? "Siguiente" : "No lo sé"}
-            </Button>
-            {!showFeedback && (
+            {showFeedback ? (
               <Button
-                onClick={onAnswer}
-                disabled={!userAnswer.trim()}
-                className="h-12 flex-[2] rounded-2xl font-extrabold text-sm gap-1"
+                onClick={onSkip}
+                className="h-12 w-full rounded-2xl font-bold text-sm gap-2 bg-primary text-primary-foreground hover:bg-primary/90 shadow-md"
               >
-                Comprobar <Zap className="h-4 w-4" />
+                Siguiente <ArrowRight className="h-4 w-4" />
               </Button>
+            ) : (
+              <>
+                <Button
+                  variant="outline"
+                  onClick={onSkip}
+                  className="h-12 flex-1 rounded-2xl font-bold text-sm"
+                >
+                  No lo sé
+                </Button>
+                <Button
+                  onClick={onAnswer}
+                  disabled={!userAnswer.trim()}
+                  className="h-12 flex-[2] rounded-2xl font-extrabold text-sm gap-1"
+                >
+                  Comprobar <Zap className="h-4 w-4" />
+                </Button>
+              </>
             )}
           </div>
 
