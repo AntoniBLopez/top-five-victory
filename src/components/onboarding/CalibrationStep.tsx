@@ -1,3 +1,4 @@
+import { forwardRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Zap, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -26,7 +27,7 @@ interface CalibrationStepProps {
   totalCards: number;
 }
 
-const CalibrationStep = ({
+const CalibrationStep = forwardRef<HTMLDivElement, CalibrationStepProps>(({
   cards,
   currentIndex,
   userAnswer,
@@ -38,13 +39,14 @@ const CalibrationStep = ({
   onBack,
   onSkipAll,
   totalCards,
-}: CalibrationStepProps) => {
+}, ref) => {
   const card = cards[currentIndex];
   if (!card) return null;
   const progress = (currentIndex / totalCards) * 100;
 
   return (
     <motion.div
+      ref={ref}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -172,6 +174,8 @@ const CalibrationStep = ({
       </AnimatePresence>
     </motion.div>
   );
-};
+});
+
+CalibrationStep.displayName = "CalibrationStep";
 
 export default CalibrationStep;
