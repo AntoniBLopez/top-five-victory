@@ -209,8 +209,7 @@ const OnboardingPage = () => {
     }));
 
     isAdvancingRef.current = false;
-    feedbackTimerRef.current = setTimeout(() => advanceCard(), 1500);
-  }, [userAnswer, cardIndex, calibrationDeck, showFeedback, advanceCard]);
+  }, [userAnswer, cardIndex, calibrationDeck, showFeedback]);
 
   const handleSkip = useCallback(() => {
     if (showFeedback) {
@@ -225,8 +224,7 @@ const OnboardingPage = () => {
     setIsCorrect(false);
     setShowFeedback(true);
     isAdvancingRef.current = false;
-    feedbackTimerRef.current = setTimeout(() => advanceCard(), 1200);
-  }, [showFeedback, cardIndex, calibrationDeck, advanceCard]);
+  }, [showFeedback, cardIndex, calibrationDeck]);
 
   const handleSkipCalibration = useCallback(() => {
     setState((prev) => ({
