@@ -203,6 +203,7 @@ const OnboardingPage = () => {
     const correct = userAnswer.trim().toLowerCase() === card.answer.toLowerCase();
     setIsCorrect(correct);
     setShowFeedback(true);
+    if (correct) playCorrectSound();
 
     setState((prev) => ({
       ...prev,
