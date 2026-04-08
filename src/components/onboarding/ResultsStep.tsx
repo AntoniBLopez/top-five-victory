@@ -230,6 +230,7 @@ const ResultsStep = ({ results, level, dailyGoal, calibrationMode, onFinish }: R
         </motion.div>
       )}
 
+      <Button
         onClick={onFinish}
         className="h-14 w-full rounded-2xl text-base font-extrabold gap-2"
       >
