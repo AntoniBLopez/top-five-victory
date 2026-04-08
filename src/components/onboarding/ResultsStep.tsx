@@ -93,7 +93,7 @@ const ResultsStep = ({ results, level, dailyGoal, calibrationMode, onFinish }: R
           <>
             <h2 className="text-2xl font-extrabold text-foreground">Tu nivel: {levelLabel}</h2>
             <p className="mt-1 text-sm text-muted-foreground">
-              {pct}% de precisión · {correct}/{total} correctas
+              {correct}/{total} correctas
             </p>
           </>
         )}
