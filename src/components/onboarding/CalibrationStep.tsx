@@ -130,7 +130,6 @@ const CalibrationStep = ({
                     </div>
                   ) : (
                     <div className="space-y-1">
-                      <p className="text-sm font-bold text-destructive">Incorrecto</p>
                       <p className="text-sm text-muted-foreground">
                         Respuesta correcta:{" "}
                         <span className="font-extrabold text-foreground">{card.answer}</span>
