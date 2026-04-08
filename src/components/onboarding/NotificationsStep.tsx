@@ -148,11 +148,6 @@ const NotificationsStep = ({ onNext, onBack, onSkip }: NotificationsStepProps) =
           </button>
         </div>
 
-        <div className="mt-4 flex justify-start">
-          <Button variant="ghost" onClick={onBack} className="h-10 rounded-2xl font-bold gap-1 text-muted-foreground">
-            <ArrowLeft className="h-4 w-4" /> Atrás
-          </Button>
-        </div>
       </motion.div>
 
       <AlertDialog open={showConfirm} onOpenChange={setShowConfirm}>
