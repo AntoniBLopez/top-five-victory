@@ -234,7 +234,20 @@ const ResultsStep = ({ results, level, dailyGoal, calibrationMode, onFinish }: R
         </div>
       </div>
 
-      <Button
+      {calibrationMode === "skipped" && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          className="mb-8 rounded-2xl border border-primary/30 bg-card p-5"
+        >
+          <p className="text-sm font-extrabold text-foreground mb-1">Personalización progresiva</p>
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            En las primeras sesiones detectaremos tus tiempos y pronombres más débiles para personalizar la cola.
+          </p>
+        </motion.div>
+      )}
+
         onClick={onFinish}
         className="h-14 w-full rounded-2xl text-base font-extrabold gap-2"
       >
