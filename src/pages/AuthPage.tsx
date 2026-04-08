@@ -73,7 +73,7 @@ const AuthPage = () => {
               <span className="text-4xl">🎮</span>
             </div>
             <h1 className="text-2xl font-extrabold text-foreground md:text-3xl">
-              {isLogin ? "¡Willkommen zurück!" : "Erstelle dein Konto"}
+              {isLogin ? "¡Willkommen zurück!" : "Registriere dich"}
             </h1>
             <p className="mt-2 text-sm text-muted-foreground">
               {isLogin
