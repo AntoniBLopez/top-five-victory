@@ -52,6 +52,8 @@ const App = () => (
             <Route path="/admin/blog/edit/:id" element={<AdminBlogEditorPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
+          <ChatbotWidget />
+          </Routes>
         </BrowserRouter>
       </TooltipProvider>
     </ThemeProvider>
