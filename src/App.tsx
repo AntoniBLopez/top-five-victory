@@ -16,6 +16,11 @@ import SmartReviewPage from "./pages/SmartReviewPage";
 import OnboardingPage from "./pages/OnboardingPage";
 import AchievementsPage from "./pages/AchievementsPage";
 import AnalyticsPage from "./pages/AnalyticsPage";
+import BlogPage from "./pages/BlogPage";
+import BlogPostPage from "./pages/BlogPostPage";
+import AdminBlogPage from "./pages/AdminBlogPage";
+import AdminBlogEditorPage from "./pages/AdminBlogEditorPage";
+import NotFound from "./pages/NotFound";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();

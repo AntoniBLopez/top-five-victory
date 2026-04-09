@@ -107,6 +107,13 @@ const LandingPage = () => {
             <span className="text-base font-extrabold text-foreground md:text-lg">VerboFlow</span>
           </div>
           <div className="flex items-center gap-2 md:gap-3">
+            <Button
+              variant="ghost"
+              onClick={() => navigate("/blog")}
+              className="text-sm font-semibold hidden sm:inline-flex"
+            >
+              Blog
+            </Button>
             <button
               onClick={() => setShowDownload(true)}
               className="rounded-full p-2 hover:bg-muted transition-colors"
